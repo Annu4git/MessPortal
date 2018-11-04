@@ -5,4 +5,6 @@ from app import app
 
 app.no_of_cancellations_allowed=5
 
+app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
+
 app.run(debug = True)
