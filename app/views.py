@@ -23,16 +23,14 @@ def authenticate():
    		msg = loginp.authenticate_student(request)
    		print "bool : ",bool(msg)
    		if bool(msg) is False:
-   			print "login failed"
+   			return render_template('login.html')
    		else:
    			print "authenticate 3"
 			session['roll_no'] = msg['roll_no']
 			session['name'] = msg['name']
-			print "successful login"
+			return render_template("dashboard.html", message=msg)
 
-	return render_template("dashboard.html", message=msg)
-
-	return render_template('login.html')
+	
 
 
 @app.route("/home.html")

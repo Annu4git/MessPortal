@@ -11,8 +11,9 @@ def authenticate_student(request):
 			query="select * from student_profile where (email ='" + request.form['email'] + "' and password ='" + request.form['password'] + "')"
 			cur.execute(query)
 			row = cur.fetchone()
-			msg['roll_no']=row[0]
-			msg['name']=row[1]
+                        if(len(row)>0):
+			   msg['roll_no']=row[0]
+			   msg['name']=row[1]
 	except:
 		print "connection fails"
 		return "connection fails"

@@ -153,11 +153,11 @@
 </style>
  
 </head>
-<body style="background: url(login_background.jpg) no-repeat center center fixed;background-size: cover;">
+<body style="background: url('static/login_background.jpg') no-repeat center center fixed;background-size: cover;">
 
 <center>
 <form action="/authenticate" method="post" class="modal-content animate" style="">
-<img src="iiit_logo.png" style="width:50%;margin-top: 5%">
+<img src="/static/iiit_logo.png"  style="width:50%;margin-top: 5%">
 <hr>
 <input id="email" name="email" style='margin-top: 2%;width:75%' type="text" placeholder="Email Address" required><br><br>
 <input id="password" name="password" style='width:75%' type="text" placeholder="Password" required><br><br>
@@ -179,16 +179,13 @@
 
 <center>
 <div class="mess_buttons" style="width:100%">
-<a href="uploads/yukta.pdf" target="_blank"><button type="button" style="width:18%" class="btn btn-danger btn3d">Yuktahar Menu</button></a>
-<a href="uploads/north.pdf" target="_blank"><button type="button" style="width:18%" class="btn btn-primary btn3d">North Menu</button></a>
-<a href="uploads/south.pdf" target="_blank"><button type="button" style="width:18%" class="btn btn-warning btn3d">South Menu</button></a>
-<a href="uploads/kadambveg.pdf" target="_blank"><button type="button" style="width:18%" class="btn btn-success btn3d">Kadamb Menu  <img src="veg.png" style="width:13%"></button></a>
-<a href="uploads/kadambnonveg.pdf" target="_blank"><button type="button" style="width:18%" class="btn btn-info btn3d">Kadamb Menu <img src="nonveg.png" style="width:13%"></button></a>
+<a href="static/uploads/yukta.pdf" target="_blank"><button type="button" style="width:18%" class="btn btn-danger btn3d">Yuktahar Menu</button></a>
+<a href="static/uploads/north.pdf" target="_blank"><button type="button" style="width:18%" class="btn btn-primary btn3d">North Menu</button></a>
+<a href="static/uploads/south.pdf" target="_blank"><button type="button" style="width:18%" class="btn btn-warning btn3d">South Menu</button></a>
+<a href="static/uploads/kadambveg.pdf" target="_blank"><button type="button" style="width:18%" class="btn btn-success btn3d">Kadamb Menu  <img src="static/veg.png" style="width:13%"></button></a>
+<a href="static/uploads/kadambnonveg.pdf" target="_blank"><button type="button" style="width:18%" class="btn btn-info btn3d">Kadamb Menu <img src="static/nonveg.png" style="width:13%"></button></a>
 </div>
 </center>
-
- 
-<script  src="/static/js/home.js"></script>
 
 </body>
 </html>

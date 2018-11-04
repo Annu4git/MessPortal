@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Dashboard|Mess Portal</title>
+  <title>Homepage</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -12,7 +12,17 @@
   <script>
     var date = new Date();
     var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+
   </script>
+
+
+
+
+
+
+
+
+
 </head>
 <style type="text/css">
   .w3-center {
@@ -173,8 +183,6 @@ body {font-family: Verdana, sans-serif; /*background-image: url('bhakt.jpg')*/;}
 
     function function1() 
     {
-        var t=document.getElementById('uname').innerHTML[0];
-        document.getElementById('profile_pic').src="alphabets/"+t.toLowerCase()+".png";
         
         show_month_year();
         var ul = document.getElementsByClassName("days");
@@ -219,7 +227,7 @@ body {font-family: Verdana, sans-serif; /*background-image: url('bhakt.jpg')*/;}
   <div class="container-fluid" >
 
       <b> <div class="navbar-header" style="color:white; margin-top: 0px; margin-left: 25%; font-size: 30px;">
-        <img src="a.png" style="height:10vh;">
+        <img src="static/a.png" style="height:10vh;">
       IIITH MESS PORTAL
     </div></b>
     <ul class="nav navbar-nav navbar-right">
@@ -234,14 +242,14 @@ body {font-family: Verdana, sans-serif; /*background-image: url('bhakt.jpg')*/;}
       <center>
       <h1>Welcome</h1>
       <br>
-      <img src="alphabets/t.png" width="85px" height="85px"><br>
+      <img src="static/alphabets/t.png" width="85px" height="85px"><br>
       <span id="uname">{{session['name']}}</span><br>
       <span id="roll">{{session['roll_no']}}</span><br><br>
     </center>
       <div style=" height:100%;">
         
         <button  style="width:100%;margin-top: 0px" type="button" class="btn btn-primary">View Mess Registration</button><br>
-        <button style="width:100%;margin-top: 10px"type="button" class="btn btn-success">Cancel Meals</button><br>
+        <button style="width:100%;margin-top: 10px"type="button" class="btn btn-success" ">Cancel Meals</button><br>
         <button style="width:100%;margin-top: 10px"type="button" class="btn btn-info">Change Registration</button><br>
         <button style="width:100%;margin-top: 10px"type="button" class="btn btn-warning">View Default Mess</button><br>
       </div>
@@ -328,11 +336,5 @@ body {font-family: Verdana, sans-serif; /*background-image: url('bhakt.jpg')*/;}
 
   </div>
 </div>
-
-
-
-
-
-<script  src="/static/js/home.js"></script>
 </body>
 </html>
