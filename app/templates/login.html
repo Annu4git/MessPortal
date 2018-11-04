@@ -156,11 +156,11 @@
 <body style="background: url(login_background.jpg) no-repeat center center fixed;background-size: cover;">
 
 <center>
-<form class="modal-content animate" style="">
+<form action="/authenticate" method="post" class="modal-content animate" style="">
 <img src="iiit_logo.png" style="width:50%;margin-top: 5%">
 <hr>
-<input style='margin-top: 2%;width:75%' type="text" placeholder="Email Address" required><br><br>
-<input style='width:75%' type="text" placeholder="Password" required><br><br>
+<input id="email" name="email" style='margin-top: 2%;width:75%' type="text" placeholder="Email Address" required><br><br>
+<input id="password" name="password" style='width:75%' type="text" placeholder="Password" required><br><br>
 <input style='margin-bottom: 5%;'type="submit" value="Login">
 </form>
 </center>
