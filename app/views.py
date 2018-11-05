@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, session
 import model as model
 import login as loginp
+import json
 
 from app import app
 
@@ -21,17 +22,39 @@ def authenticate():
    	elif request.method == 'POST':
    		print "authenticate 2"
    		msg = loginp.authenticate_student(request)
-   		print "bool : ",bool(msg)
-   		print "msg : ", msg
+   		
    		if msg['authenticate'] == False:
    			return render_template('login.html')
    		else:
    			print "authenticate 3"
+	   		jso = json.dumps(msg)
+	   		print "final json"
+	   		print jso
 			session['roll_no'] = msg['roll_no']
 			session['name'] = msg['name']
-			return render_template("dashboard.html", message=msg)
+			return render_template("dashboard.html", message=jso)
 
-	
+@app.route("/nextmonth", methods=['POST'])
+def nextmonth(roll_no, month, year):
+	msg={}
+	print
+	print
+	print
+	print
+
+	print
+	print
+	print "in nextmonth"
+
+	if request.method == 'POST':
+   		print "authenticate 2"
+   		msg = loginp.next_month(session['roll_no'], month, year)
+   		msg["roll_no"]=session['roll_no']
+		msg["name"]=session['name']
+   		jso = json.dumps(msg)
+   		print "final json"
+   		print jso
+   		return render_template("dashboard.html", message=jso)	
 
 
 @app.route("/home.html")

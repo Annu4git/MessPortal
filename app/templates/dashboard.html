@@ -142,6 +142,14 @@ body {font-family: Verdana, sans-serif; /*background-image: url('bhakt.jpg')*/;}
     month[10] = "November";
     month[11] = "December";
     
+    var msg = '{{message}}';
+    msg=msg.replace(/&#34;/g,'"');
+    console.log("msg recieved")
+    console.log(msg);
+    var data = JSON.parse(msg);
+    console.log("parsed data : ");
+    console.log(data["breakfast"][0]);
+    var roll_no = data["roll_no"];
 
     function show_month_year()
     {
@@ -161,9 +169,26 @@ body {font-family: Verdana, sans-serif; /*background-image: url('bhakt.jpg')*/;}
             current_year+=1;    
         current_month=(current_month+1)%12;
         firstDay = new Date(current_year, current_month, 1);
-        lastDay = new Date(current_year, current_month + 1, 0);        
-        function1();
+        lastDay = new Date(current_year, current_month + 1, 0); 
+
+        $.ajax({
+          type: "POST",
+          url: "{{ url_for('nextmonth') }}",
+          data: { 
+            "roll_no" : roll_no,
+            "month" : current_month,
+            "year" : current_year
+          }
+        }).done(function(data) {
+            console.log("in callback function")
+            msg = '{{message}}';
+            console.log(msg);
+            data = JSON.parse(msg);
+            console.log(data);
+           function1();
+        });
     }
+
     function decrement_month()
     {
     
@@ -209,7 +234,13 @@ body {font-family: Verdana, sans-serif; /*background-image: url('bhakt.jpg')*/;}
             //li.setAttribute("style","padding-left:5px;");
             li.appendChild(document.createTextNode(j.toString()+"\n"));
             ul[0].appendChild(li);
-            var mess1="<font size=2>North<br>",mess2="Kadamb<br>",mess3="South<br></font>";
+
+            
+            // meals = data["meals"];
+            // console.log("meals : ");
+            // console.log(meals);
+
+            var mess1="<font size=2>"+ data["breakfast"][i]+" (b)"+"<br>",mess2=data["lunch"][i]+" (l)" + "<br>",mess3= data["dinner"][i]+" (d)" + "<br></font>";
             if(j==date.getDate()  && date.getMonth()==current_month )
             document.getElementById(j.toString()+"box").innerHTML="<b><button data-toggle='modal' data-target='#myModal'><span class='active'>"+j.toString()+"</span><br>"+mess1+mess2+mess3+"</b></button>";
             else
