@@ -183,7 +183,9 @@ body {font-family: Verdana, sans-serif; /*background-image: url('bhakt.jpg')*/;}
 
     function function1() 
     {
-        
+        var t=document.getElementById('uname').innerHTML[0];
+        document.getElementById('profile_pic').src="alphabets/"+t.toLowerCase()+".png";
+      
         show_month_year();
         var ul = document.getElementsByClassName("days");
         var month_label=document.getElementById("cur_month");
@@ -242,7 +244,7 @@ body {font-family: Verdana, sans-serif; /*background-image: url('bhakt.jpg')*/;}
       <center>
       <h1>Welcome</h1>
       <br>
-      <img src="static/alphabets/t.png" width="85px" height="85px"><br>
+      <img src="" width="85px" height="85px"><br>
       <span id="uname">{{session['name']}}</span><br>
       <span id="roll">{{session['roll_no']}}</span><br><br>
     </center>
