@@ -10,13 +10,16 @@ def authenticate_student(request):
 			cur = con.cursor()
 			query="select * from student_profile where (email ='" + request.form['email'] + "' and password ='" + request.form['password'] + "')"
 			cur.execute(query)
+			print "working"
+			print cur
 			row = cur.fetchone()
-                        if(len(row)>0):
-			   msg['roll_no']=row[0]
-			   msg['name']=row[1]
+			if(len(row)>0):
+				msg['roll_no']=row[0]
+				msg['name']=row[1]
+				msg['authenticate']=True
 	except:
 		print "connection fails"
-		return "connection fails"
+		msg['authenticate']=False
 	return msg
 
 def authenticate_admin(request):

@@ -22,7 +22,8 @@ def authenticate():
    		print "authenticate 2"
    		msg = loginp.authenticate_student(request)
    		print "bool : ",bool(msg)
-   		if bool(msg) is False:
+   		print "msg : ", msg
+   		if msg['authenticate'] == False:
    			return render_template('login.html')
    		else:
    			print "authenticate 3"
