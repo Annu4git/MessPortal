@@ -13,7 +13,7 @@ def login():
 def authenticate():
 	msg={}
 	print "authenticate 1"
-
+	#test
 	if 'username' in session:
 		print session
 		msg['roll_no'] = session['roll_no']
