@@ -241,7 +241,26 @@ body {font-family: Verdana, sans-serif; /*background-image: url('bhakt.jpg')*/;}
             // console.log(meals);
 
             //Testing
-            var mess1="<font size=2>"+ data["breakfast"][i]+" (B)"+"<br>",mess2=data["lunch"][i]+" (L)" + "<br>",mess3= data["dinner"][i]+" (D)" + "<br></font>";
+            var mess1=""
+            if(data["bcancel"][i]=="1"){
+              mess1="<font size=2>Cancelled<br>";
+            }
+            else
+              mess1="<font size=2>"+data["breakfast"][i]+"<br>";
+             var mess2=""
+            if(data["lcancel"][i]=="1"){
+              mess2="<font size=2>Cancelled<br>";
+            }
+            else
+              mess2="<font size=2>"+data["lunch"][i]+"<br>";
+             var mess3=""
+            if(data["dcancel"][i]=="1"){
+              mess3="<font size=2>Cancelled<br></font>";
+            }
+            else
+              mess3="<font size=2>"+data["dinner"][i]+"<br></font>";
+
+           //  var mess1="<font size=2>"+ data["breakfast"][i]+"<br>",mess2=data["lunch"][i]+ "<br>",mess3= data["dinner"][i]+ "<br></font>";
             if(j==date.getDate()  && date.getMonth()==current_month )
             document.getElementById(j.toString()+"box").innerHTML="<b><button data-toggle='modal' data-target='#myModal'><span class='active'>"+j.toString()+"</span><br>"+mess1+mess2+mess3+"</b></button>";
             else
@@ -283,7 +302,7 @@ body {font-family: Verdana, sans-serif; /*background-image: url('bhakt.jpg')*/;}
       <div style=" height:100%;">
         
         <button  style="width:100%;margin-top: 0px" type="button" class="btn btn-primary">View Mess Registration</button><br>
-        <button style="width:100%;margin-top: 10px"type="button" class="btn btn-success" ">Cancel Meals</button><br>
+        <a href="/cancelmeals.html"><button style="width:100%;margin-top: 10px"type="button" class="btn btn-success" ">Cancel Meals</button><br>
         <button style="width:100%;margin-top: 10px"type="button" class="btn btn-info">Change Registration</button><br>
         <button style="width:100%;margin-top: 10px"type="button" class="btn btn-warning">View Default Mess</button><br>
       </div>
