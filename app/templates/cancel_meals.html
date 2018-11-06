@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-  <link href="lightpick.css" rel="stylesheet">
+  <link href="static/lightpick.css" rel="stylesheet">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
@@ -87,17 +87,18 @@
 <button class="collapsible">Datewise Cancellation</button>
 <div class="content">
   <br>
+  <form  method="post">
   
-  
-  Date : <input type="text" id="demo" ><br>
-  Meals :<input type="checkbox" name="meal_type_1" value="breakfast"> Breakfast
-         <input type="checkbox" name="meal_type_1" value="lunch"> Lunch
-         <input type="checkbox" name="meal_type_1" value="dinner"> Dinner
+  Date : <input type="text" id="demo" name="demo"><br>
+  Meals :<input type="checkbox" id="meal_type_1" name="meal_type_1" value="breakfast"> Breakfast
+         <input type="checkbox" id="meal_type_2" name="meal_type_2" value="lunch"> Lunch
+         <input type="checkbox" id="meal_type_3" name="meal_type_3" value="dinner"> Dinner
          <br>
 
-         <button>Cancel Meals</button><button>UnCancel Meals</button><br>
+         <input type="submit" value="Cancel Meal" formaction="/cancelmealstatus"><input type="submit" value="Uncancel Meal" formaction="/uncancelmealstatus"><br>
   <br>
 </div>
+</form>
   <br>
 <button class="collapsible">Daywise Cancellation</button>
 <div class="content">
@@ -151,16 +152,10 @@
 <br>
 <br><br>
 
-
-
-
-
-<script  src="/static/js/home.js"></script>
-
 </body>
 </html>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
-<script src="lightpick.js"></script>
+<script src="static/lightpick.js"></script>
 <script>
     
     new Lightpick({
