@@ -28,6 +28,9 @@ def authenticate_student(request):
 				msg["breakfast"]=meals["breakfast"]
 				msg["lunch"]=meals["lunch"]
 				msg["dinner"]=meals["dinner"]
+                                msg["bcancel"]=meals["bcancel"]
+                                msg["lcancel"]=meals["lcancel"]
+                                msg["dcancel"]=meals["dcancel"]
 	except:
 		print "connection fails authenticate_student"
 		msg["authenticate"]=False
