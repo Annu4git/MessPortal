@@ -36,6 +36,11 @@
 ul {list-style-type: none;}
 body {font-family: Verdana, sans-serif; /*background-image: url('bhakt.jpg')*/;}
 
+  .cal_button
+{
+  width:100%;
+
+}
 
 .month {
     padding: 25px 25px;
@@ -262,9 +267,9 @@ body {font-family: Verdana, sans-serif; /*background-image: url('bhakt.jpg')*/;}
 
            //  var mess1="<font size=2>"+ data["breakfast"][i]+"<br>",mess2=data["lunch"][i]+ "<br>",mess3= data["dinner"][i]+ "<br></font>";
             if(j==date.getDate()  && date.getMonth()==current_month )
-            document.getElementById(j.toString()+"box").innerHTML="<b><button data-toggle='modal' data-target='#myModal'><span class='active'>"+j.toString()+"</span><br>"+mess1+mess2+mess3+"</b></button>";
+            document.getElementById(j.toString()+"box").innerHTML="<b><button class='cal_button' data-toggle='modal' data-target='#myModal'><span class='active'>"+j.toString()+"</span><br>"+mess1+mess2+mess3+"</b></button>";
             else
-            document.getElementById(j.toString()+"box").innerHTML="<b><button data-toggle='modal' data-target='#myModal'>"+j.toString()+"</b><br>"+mess1+mess2+mess3+"</button>";
+            document.getElementById(j.toString()+"box").innerHTML="<b><button class='cal_button' data-toggle='modal' data-target='#myModal'>"+j.toString()+"</b><br>"+mess1+mess2+mess3+"</button>";
         }
         
   }
