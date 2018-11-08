@@ -17,20 +17,20 @@ def authenticate_student(request):
 			print cur
 			row = cur.fetchone()
 			if(len(row)>0):
+				roll_no = row[0]
 
-				msg["roll_no"]=row[0]
+				msg["roll_no"]=roll_no
 				msg["name"]=row[1]
 				msg["authenticate"]=True
-				print "student_profile found"
-				print "month & year : ", datetime.datetime.now().month, " : ", datetime.datetime.now().year
-				meals = model.get_meal_registration_for_month(row[0], datetime.datetime.now().month, datetime.datetime.now().year)
+				
+				meals = model.get_meal_registration_for_month(roll_no, datetime.datetime.now().month, datetime.datetime.now().year)
 
 				msg["breakfast"]=meals["breakfast"]
 				msg["lunch"]=meals["lunch"]
 				msg["dinner"]=meals["dinner"]
-                                msg["bcancel"]=meals["bcancel"]
-                                msg["lcancel"]=meals["lcancel"]
-                                msg["dcancel"]=meals["dcancel"]
+                msg["bcancel"]=meals["bcancel"]
+                msg["lcancel"]=meals["lcancel"]
+                msg["dcancel"]=meals["dcancel"]
 	except:
 		print "connection fails authenticate_student"
 		msg["authenticate"]=False

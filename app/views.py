@@ -4,46 +4,74 @@ import login as loginp
 import json
 import datetime
 import sqlite3 as sql
+from flask import make_response
 from app import app
 
 @app.route("/")
 def login():
+	msg={}
+	email = request.cookies.get('email')
+	print "email : ", email
+	print "session : ", session
+	print "cookies : ", request.cookies
+	if email in session:
+
+		roll_no = session[email]
+		msg["roll_no"] = roll_no
+		
+		name = request.cookies.get('name')
+		msg["name"]=name
+		msg["authenticate"]=True
+		meals = model.get_meal_registration_for_month(roll_no, datetime.datetime.now().month, datetime.datetime.now().year)
+
+		msg["breakfast"]=meals["breakfast"]
+		msg["lunch"]=meals["lunch"]
+		msg["dinner"]=meals["dinner"]
+		msg["bcancel"]=meals["bcancel"]
+		msg["lcancel"]=meals["lcancel"]
+		msg["dcancel"]=meals["dcancel"]
+		json_obj = json.dumps(msg)
+		return render_template("dashboard.html", message=json_obj)
+	else:
+		return render_template("login.html")
+
+@app.route("/logout")
+def logout():
+	email = request.cookies.get('email')
+	session.pop(email,None)
 	return render_template("login.html")
 
 @app.route("/authenticate", methods=['POST'])
 def authenticate():
+	email = request.form['email']
 	msg={}
-	print "authenticate 1"
-	#test
-	if 'username' in session:
-		print session
-		msg['roll_no'] = session['roll_no']
-		msg['name'] = session['name']
-		return render_template("dashboard.html", message=session['username'] +" has already logged in,  first logout!!!")
-	elif request.method == 'POST':
-			print "authenticate 2"
+
+	if request.method == 'POST':
+			
 			msg = loginp.authenticate_student(request)
 			
 			if msg['authenticate'] == False:
 				return render_template('login.html')
 			else:
-				print "authenticate 3"
-				jso = json.dumps(msg)
-				print "final json"
-				print jso
-				print "broooooo" 
-				print msg["breakfast"][0]
-			session['roll_no'] = msg['roll_no']
-			session['name'] = msg['name']
-			return render_template("dashboard.html", message=jso)
+				
+				json_obj = json.dumps(msg)
+				
+				session[email] = msg["roll_no"]
+
+				resp = make_response(render_template("dashboard.html", message=json_obj))
+				resp.set_cookie('email', email)
+				resp.set_cookie('name', msg["name"])
+
+			return resp
 
 @app.route("/nextmonth", methods=['POST'])
 def nextmonth():
 	msg={}
+	email = request.cookies.get('email')
 	print
 	print
-	print
-	print
+	print "**************************************"
+	print "email : ", session[email]
 	json_obj = request.form['mydata']
 	json_data = json.loads(json_obj)
 	print json_data['month']

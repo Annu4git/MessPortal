@@ -36,6 +36,11 @@
 ul {list-style-type: none;}
 body {font-family: Verdana, sans-serif; /*background-image: url('bhakt.jpg')*/;}
 
+  .cal_button
+{
+  width:100%;
+
+}
 
 .month {
     padding: 25px 25px;
@@ -265,9 +270,9 @@ body {font-family: Verdana, sans-serif; /*background-image: url('bhakt.jpg')*/;}
 
            //  var mess1="<font size=2>"+ data["breakfast"][i]+"<br>",mess2=data["lunch"][i]+ "<br>",mess3= data["dinner"][i]+ "<br></font>";
             if(j==date.getDate()  && date.getMonth()==current_month )
-            document.getElementById(j.toString()+"box").innerHTML="<b><button data-toggle='modal' data-target='#myModal'><span class='active'>"+j.toString()+"</span><br>"+mess1+mess2+mess3+"</b></button>";
+            document.getElementById(j.toString()+"box").innerHTML="<b><button class='cal_button' data-toggle='modal' data-target='#myModal'><span class='active'>"+j.toString()+"</span><br>"+mess1+mess2+mess3+"</b></button>";
             else
-            document.getElementById(j.toString()+"box").innerHTML="<b><button data-toggle='modal' data-target='#myModal'>"+j.toString()+"</b><br>"+mess1+mess2+mess3+"</button>";
+            document.getElementById(j.toString()+"box").innerHTML="<b><button class='cal_button' data-toggle='modal' data-target='#myModal'>"+j.toString()+"</b><br>"+mess1+mess2+mess3+"</button>";
         }
         
   }
@@ -288,7 +293,7 @@ body {font-family: Verdana, sans-serif; /*background-image: url('bhakt.jpg')*/;}
     </div></b>
     <ul class="nav navbar-nav navbar-right">
       <li><a href="#"><span id="username" class="glyphicon glyphicon-user"></span></a></li>
-      <li><a id="btnLogout" href="../"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+      <li><a id="btnLogout" href="{{ url_for('logout')}}"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
     </ul>
   </div>
 </nav>
@@ -306,6 +311,7 @@ body {font-family: Verdana, sans-serif; /*background-image: url('bhakt.jpg')*/;}
         
         <button  style="width:100%;margin-top: 0px" type="button" class="btn btn-primary">View Mess Registration</button><br>
         <a href="/cancelmeals.html"><button style="width:100%;margin-top: 10px"type="button" class="btn btn-success" ">Cancel Meals</button> </a><br>
+        <a href="/cancelmeals.html"><button style="width:100%;margin-top: 10px"type="button" class="btn btn-success" ">Cancel Meals</button><br></a>
         <button style="width:100%;margin-top: 10px"type="button" class="btn btn-info">Change Registration</button><br>
         <button style="width:100%;margin-top: 10px"type="button" class="btn btn-warning">View Default Mess</button><br>
       </div>
