@@ -40,12 +40,15 @@ def next_month(roll_no, month, year):
 	msg={}
 	try:
 		with sql.connect("mess_portal.db") as con:
-			meals = model.get_meal_registration_for_month(roll_no, now.month, now.year)
+			meals = model.get_meal_registration_for_month(roll_no, month, year)
 			msg["breakfast"]=meals["breakfast"]
 			msg["lunch"]=meals["lunch"]
 			msg["dinner"]=meals["dinner"]
+			msg["bcancel"]=meals["bcancel"]
+			msg["lcancel"]=meals["lcancel"]
+			msg["dcancel"]=meals["dcancel"]
 	except:
-		print "connection fails authenticate_student"
+		print "connection fails next_month"
 		msg["authenticate"]=False
 	return msg
 

@@ -144,11 +144,7 @@ body {font-family: Verdana, sans-serif; /*background-image: url('bhakt.jpg')*/;}
     
     var msg = '{{message}}';
     msg=msg.replace(/&#34;/g,'"');
-    console.log("msg recieved")
-    console.log(msg);
     var data = JSON.parse(msg);
-    console.log("parsed data : ");
-    console.log(data["breakfast"][0]);
     var roll_no = data["roll_no"];
 
     function show_month_year()
@@ -170,22 +166,17 @@ body {font-family: Verdana, sans-serif; /*background-image: url('bhakt.jpg')*/;}
         current_month=(current_month+1)%12;
         firstDay = new Date(current_year, current_month, 1);
         lastDay = new Date(current_year, current_month + 1, 0); 
-
-        $.ajax({
-          type: "POST",
-          url: "{{ url_for('nextmonth') }}",
-          data: { 
-            "roll_no" : roll_no,
-            "month" : current_month,
-            "year" : current_year
-          }
-        }).done(function(data) {
-            console.log("in callback function")
-            msg = '{{message}}';
-            console.log(msg);
-            data = JSON.parse(msg);
-            console.log(data);
-           function1();
+        
+        json_obj = {
+          "month" : current_month.toString(),
+          "year" : current_year.toString()
+        }
+        $.post( "/nextmonth", {
+        mydata: JSON.stringify(json_obj)
+        }, function(json_data){
+          console.log(json_data);  
+          data = JSON.parse(json_data);
+          function1();
         });
     }
 
@@ -201,7 +192,19 @@ body {font-family: Verdana, sans-serif; /*background-image: url('bhakt.jpg')*/;}
         current_month=(current_month-1+12)%12;
         firstDay = new Date(current_year, current_month, 1);
         lastDay = new Date(current_year, current_month + 1, 0);        
-        function1();
+        
+        json_obj = {
+          "month" : current_month.toString(),
+          "year" : current_year.toString()
+        }
+        $.post( "/nextmonth", {
+        mydata: JSON.stringify(json_obj)
+        }, function(json_data){
+          console.log(json_data);  
+          data = JSON.parse(json_data);
+          function1();
+        });
+
     }
 
 
@@ -302,7 +305,7 @@ body {font-family: Verdana, sans-serif; /*background-image: url('bhakt.jpg')*/;}
       <div style=" height:100%;">
         
         <button  style="width:100%;margin-top: 0px" type="button" class="btn btn-primary">View Mess Registration</button><br>
-        <a href="/cancelmeals.html"><button style="width:100%;margin-top: 10px"type="button" class="btn btn-success" ">Cancel Meals</button><br>
+        <a href="/cancelmeals.html"><button style="width:100%;margin-top: 10px"type="button" class="btn btn-success" ">Cancel Meals</button> </a><br>
         <button style="width:100%;margin-top: 10px"type="button" class="btn btn-info">Change Registration</button><br>
         <button style="width:100%;margin-top: 10px"type="button" class="btn btn-warning">View Default Mess</button><br>
       </div>
