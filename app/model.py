@@ -36,27 +36,27 @@ def get_meal_registration_for_month(roll_no, month, year):
 			breakfast = {}
 			lunch = {}
 			dinner = {}
-                        bcancel= {}
-                        lcancel= {}
-                        dcancel= {}
+			bcancel = {}
+			lcancel = {}
+			dcancel = {}
 			i=0
 			obj={}
 			print "printing rows"
 			for row in rows:
-				#print "row=",  row
+
 				breakfast[i]=row[4]
 				lunch[i]=row[5]
 				dinner[i]=row[6]
-                                bcancel[i]=row[7]
-                                lcancel[i]=row[8]
-                                dcancel[i]=row[9]
+				bcancel[i]=row[7]
+				lcancel[i]=row[8]
+				dcancel[i]=row[9]
 				i=i+1
 			obj["breakfast"]=breakfast
 			obj["lunch"]=lunch
 			obj["dinner"]=dinner
-                        obj["bcancel"]=bcancel
-                        obj["lcancel"]=lcancel
-                        obj["dcancel"]=dcancel
+			obj["bcancel"]=bcancel
+			obj["lcancel"]=lcancel
+			obj["dcancel"]=dcancel
 			return obj
 	except:
 		print "connection fails get_meal_registration_for_month"

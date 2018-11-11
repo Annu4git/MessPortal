@@ -212,7 +212,29 @@ body {font-family: Verdana, sans-serif; /*background-image: url('bhakt.jpg')*/;}
 
     }
 
+    function show_button_data(str1,str2,str3,date)
+    {
+      var gsDayNames = [
+  'Sunday',
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday'
+];
+      var d = new Date(current_year.toString()+"-"+(current_month+1).toString()+"-"+date);
+      var dayName = gsDayNames[d.getDay()];
 
+      document.getElementById("breakfast_modal").innerHTML=str1;
+      document.getElementById("lunch_modal").innerHTML=str2;
+      document.getElementById("dinner_modal").innerHTML=str3;
+      document.getElementById("modal_year").innerHTML=current_year;
+      document.getElementById("modal_month").innerHTML=current_month+1;
+      document.getElementById("modal_date").innerHTML=date;
+      document.getElementById("modal_day").innerHTML=dayName;
+
+    }
 
     function function1() 
     {
@@ -270,9 +292,9 @@ body {font-family: Verdana, sans-serif; /*background-image: url('bhakt.jpg')*/;}
 
            //  var mess1="<font size=2>"+ data["breakfast"][i]+"<br>",mess2=data["lunch"][i]+ "<br>",mess3= data["dinner"][i]+ "<br></font>";
             if(j==date.getDate()  && date.getMonth()==current_month )
-            document.getElementById(j.toString()+"box").innerHTML="<b><button class='cal_button' data-toggle='modal' data-target='#myModal'><span class='active'>"+j.toString()+"</span><br>"+mess1+mess2+mess3+"</b></button>";
+            document.getElementById(j.toString()+"box").innerHTML="<b><button onclick=show_button_data('"+data["breakfast"][i]+"','"+data["lunch"][i]+"','"+data["dinner"][i]+"','"+j.toString()+"') class='cal_button' data-toggle='modal' data-target='#myModal'><span class='active'>"+j.toString()+"</span><br>"+mess1+mess2+mess3+"</b></button>";
             else
-            document.getElementById(j.toString()+"box").innerHTML="<b><button class='cal_button' data-toggle='modal' data-target='#myModal'>"+j.toString()+"</b><br>"+mess1+mess2+mess3+"</button>";
+            document.getElementById(j.toString()+"box").innerHTML="<b><button onclick=show_button_data('"+data["breakfast"][i]+"','"+data["lunch"][i]+"','"+data["dinner"][i]+"','"+j.toString()+"') class='cal_button' data-toggle='modal' data-target='#myModal'>"+j.toString()+"</b><br>"+mess1+mess2+mess3+"</button>";
         }
         
   }
@@ -387,9 +409,10 @@ body {font-family: Verdana, sans-serif; /*background-image: url('bhakt.jpg')*/;}
         <center><h4 class="modal-title">Mess Menu for the Day !</h4></center>
       </div>
       <div class="modal-body">
-        <p>Breakfast : </p>
-        <p>Lunch : </p>
-        <p>Dinner : </p>
+        <p>Date : <span id="modal_day"></span>, <span id="modal_date"></span>-<span id="modal_month"></span>-<span id="modal_year"></span></p>
+        <p>Breakfast : <span id="breakfast_modal"></span></p>
+        <p>Lunch : <span id="lunch_modal"></span></p>
+        <p>Dinner : <span id="dinner_modal"></span></p>
       </div>
       <div class="modal-footer">
         <center><button type="button" class="btn btn-default" data-dismiss="modal">Close</button></center>

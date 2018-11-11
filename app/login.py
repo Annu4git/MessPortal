@@ -8,13 +8,18 @@ from flask import session
 def authenticate_student(request):
 
 	msg={}
+	
 	try:
 		with sql.connect("mess_portal.db") as con:
 			con.row_factory = sql.Row
 			cur = con.cursor()
-			query="select * from student_profile where (email ='" + request.form['email'] + "' and password ='" + request.form['password'] + "')"
-			cur.execute(query)
-			print cur
+			# query="select * from student_profile where (email ='"+ request.form['email'] +"' and password ='" + request.form['password'] + "')"
+			# print "login query : ",query
+			#cur.execute(query)
+			query_args = [request.form['email'], request.form['password']]
+			print query_args
+			cur.execute("select * from student_profile where (email=? and password=?)", query_args)
+			print "execute authenticate student"
 			row = cur.fetchone()
 			if(len(row)>0):
 				roll_no = row[0]
@@ -31,6 +36,7 @@ def authenticate_student(request):
                 msg["bcancel"]=meals["bcancel"]
                 msg["lcancel"]=meals["lcancel"]
                 msg["dcancel"]=meals["dcancel"]
+
 	except:
 		print "connection fails authenticate_student"
 		msg["authenticate"]=False
@@ -38,6 +44,7 @@ def authenticate_student(request):
 
 def next_month(roll_no, month, year):
 	msg={}
+	
 	try:
 		with sql.connect("mess_portal.db") as con:
 			meals = model.get_meal_registration_for_month(roll_no, month, year)
