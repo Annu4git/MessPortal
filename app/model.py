@@ -1,4 +1,5 @@
 import sqlite3 as sql
+import datetime
 
 def get_meal_registration_for_today(roll_no, day, month, year):
 	print "Hey get_meal_registration for a student"
@@ -62,3 +63,74 @@ def get_meal_registration_for_month(roll_no, month, year):
 		print "connection fails get_meal_registration_for_month"
 		return "connection fails get_meal_registration_for_month"
 
+def get_mess_menu(breakfast, lunch, dinner, day):
+
+	print "inside model get_mess_menu"
+	menu={}
+
+	breakfast = breakfast.lower()
+	lunch = lunch.lower()
+	dinner = dinner.lower()
+
+	print breakfast
+	print lunch
+	print dinner
+	print day
+
+	try:
+		with sql.connect("mess_portal.db") as con:
+			con.row_factory = sql.Row
+			cur = con.cursor()
+			query="select breakfast from " + breakfast + "_menu " + "where day='" + day + "'"
+			cur.execute(query)
+			rows = cur.fetchall()
+			menu["breakfast_menu"] = rows[0][0]
+
+			query="select lunch from " + lunch + "_menu " + "where day='" + day + "'"
+			cur.execute(query)
+			rows = cur.fetchall()
+			menu["lunch_menu"] = rows[0][0]
+
+			query="select dinner from " + dinner + "_menu " + "where day='" + day + "'"
+			cur.execute(query)
+			rows = cur.fetchall()
+			menu["dinner_menu"] = rows[0][0]
+
+	except:
+		print "connection fails get_mess_menu"
+		return "connection fails get_mess_menu"
+	return menu
+
+def get_meal_menu(meal, day):
+
+	print "inside model get_mess_menu"
+	menu={}
+
+	try:
+		with sql.connect("mess_portal.db") as con:
+			con.row_factory = sql.Row
+			cur = con.cursor()
+
+			date = datetime.datetime.now().day
+			month = datetime.datetime.now().month
+			year = datetime.datetime.now().year
+			print "this query"
+			query="select "+ meal +" from  meal_registration where day=" + str(date) + " and month=" + str(month) + " and year=" + str(year)
+			
+			print query
+			cur.execute(query)
+			rows = cur.fetchall()
+			mess = rows[0][0]
+			print mess
+
+			query="select "+ meal +" from " + mess + "_menu " + "where day='" + day + "'"
+			cur.execute(query)
+			rows = cur.fetchall()
+			menu["meal_menu"] = rows[0][0]
+			menu["mess"] = mess
+			print menu
+
+	except:
+		print "connection fails get_mess_menu"
+		return "connection fails get_mess_menu"
+	return menu

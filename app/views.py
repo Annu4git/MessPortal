@@ -92,6 +92,50 @@ def nextmonth():
 		jso = json.dumps(msg)
 		return jso
 
+@app.route("/getmessmenu", methods=['POST'])
+def get_mess_menu():
+	msg={}
+	email = request.cookies.get('email')
+	print
+	print
+	print "**************************************"
+	print "email : ", session[email]
+	json_obj = request.form['mydata_mess_menu']
+	json_data = json.loads(json_obj)
+	breakfast = json_data['breakfast']
+	lunch = json_data['lunch']
+	dinner = json_data['dinner']
+	day = json_data['day']
+	print "in get_mess_menu"
+	print day
+	if request.method == 'POST':
+		
+		msg = model.get_mess_menu(breakfast, lunch, dinner, day)
+		jso = json.dumps(msg)
+		return jso
+
+@app.route("/getmealmenu", methods=['POST'])
+def get_meal_menu():
+	print "getmealmenu"
+	msg={}
+	email = request.cookies.get('email')
+	print
+	print
+	print "**************************************"
+	print "email : ", session[email]
+	json_obj = request.form['mydata_mess_menu']
+	json_data = json.loads(json_obj)
+	meal = json_data['meal']
+	day = json_data['day']
+	print "in get_meal_menu"
+	print day
+	if request.method == 'POST':
+		
+		msg = model.get_meal_menu(meal, day)
+		jso = json.dumps(msg)
+		return jso
+
+
 @app.route("/cancelmeals.html")
 def cancelmeal():
 	return render_template("cancel_meals.html")	
