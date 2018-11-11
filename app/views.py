@@ -60,6 +60,8 @@ def authenticate():
 				session[email] = msg["roll_no"]
 				session["name"] = msg["name"]
 				session["roll_no"] = msg["roll_no"]
+				roll_no=msg["roll_no"]
+				now = datetime.datetime.now()
 				print "s22"
 				print session
 				resp = make_response(render_template("dashboard.html", message=json_obj))
@@ -197,3 +199,132 @@ def get_meal_registration():
 	if request.method == "GET":
 		res = model.get_meal_registration()
 	return render_template("test.html", result = res, message = request.method)
+
+@app.route("/cancelcurrbreakfast", methods=['POST'])
+def cancelcurrbreakfast():
+				now = datetime.datetime.now()
+				start_day=now.day
+				start_month=now.month
+				start_year=now.year
+				end_day=now.day
+				end_month=now.month
+				end_year=now.year
+				meals = model.get_meal_registration_for_month(str(session['roll_no']), datetime.datetime.now().month, datetime.datetime.now().year)
+				val=meals["bcancel"][start_day-1]
+				with sql.connect("mess_portal.db") as con:
+						con.row_factory = sql.Row
+						cur = con.cursor()
+						if(val=="0"):
+						     query="UPDATE meal_registration SET bbit = '1' WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
+						else:
+							 query="UPDATE meal_registration SET bbit = '0' WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
+						cur.execute(query)
+						con.commit()
+				msg={}
+				email = request.cookies.get('email')
+				print "email : ", email
+				print "session : ", session
+				print "cookies : ", request.cookies
+
+				roll_no = session[email]
+				msg["roll_no"] = roll_no
+
+				name = request.cookies.get('name')
+				msg["name"]=name
+				msg["authenticate"]=True
+				meals = model.get_meal_registration_for_month(roll_no, datetime.datetime.now().month, datetime.datetime.now().year)
+
+				msg["breakfast"]=meals["breakfast"]
+				msg["lunch"]=meals["lunch"]
+				msg["dinner"]=meals["dinner"]
+				msg["bcancel"]=meals["bcancel"]
+				msg["lcancel"]=meals["lcancel"]
+				msg["dcancel"]=meals["dcancel"]
+				json_obj = json.dumps(msg)
+				return render_template("dashboard.html", message=json_obj)
+
+@app.route("/cancelcurrlunch", methods=['POST'])
+def cancelcurrlunch():
+				now = datetime.datetime.now()
+				start_day=now.day
+				start_month=now.month
+				start_year=now.year
+				end_day=now.day
+				end_month=now.month
+				end_year=now.year
+				meals = model.get_meal_registration_for_month(str(session['roll_no']), datetime.datetime.now().month, datetime.datetime.now().year)
+				val=meals["lcancel"][start_day-1]
+				with sql.connect("mess_portal.db") as con:
+						con.row_factory = sql.Row
+						cur = con.cursor()
+						if(val=="0"):
+						     query="UPDATE meal_registration SET lbit = '1' WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
+						else:
+							 query="UPDATE meal_registration SET lbit = '0' WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
+						cur.execute(query)
+						con.commit()
+				msg={}
+				email = request.cookies.get('email')
+				print "email : ", email
+				print "session : ", session
+				print "cookies : ", request.cookies
+
+				roll_no = session[email]
+				msg["roll_no"] = roll_no
+
+				name = request.cookies.get('name')
+				msg["name"]=name
+				msg["authenticate"]=True
+				meals = model.get_meal_registration_for_month(roll_no, datetime.datetime.now().month, datetime.datetime.now().year)
+
+				msg["breakfast"]=meals["breakfast"]
+				msg["lunch"]=meals["lunch"]
+				msg["dinner"]=meals["dinner"]
+				msg["bcancel"]=meals["bcancel"]
+				msg["lcancel"]=meals["lcancel"]
+				msg["dcancel"]=meals["dcancel"]
+				json_obj = json.dumps(msg)
+				return render_template("dashboard.html", message=json_obj)
+
+@app.route("/cancelcurrdinner", methods=['POST'])
+def cancelcurrdinner():
+				now = datetime.datetime.now()
+				start_day=now.day
+				start_month=now.month
+				start_year=now.year
+				end_day=now.day
+				end_month=now.month
+				end_year=now.year
+				meals = model.get_meal_registration_for_month(str(session['roll_no']), datetime.datetime.now().month, datetime.datetime.now().year)
+				val=meals["dcancel"][start_day-1]
+				with sql.connect("mess_portal.db") as con:
+						con.row_factory = sql.Row
+						cur = con.cursor()
+						if(val=="0"):
+						     query="UPDATE meal_registration SET dbit = '1' WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
+						else:
+							 query="UPDATE meal_registration SET dbit = '0' WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
+						cur.execute(query)
+						con.commit()
+				msg={}
+				email = request.cookies.get('email')
+				print "email : ", email
+				print "session : ", session
+				print "cookies : ", request.cookies
+
+				roll_no = session[email]
+				msg["roll_no"] = roll_no
+
+				name = request.cookies.get('name')
+				msg["name"]=name
+				msg["authenticate"]=True
+				meals = model.get_meal_registration_for_month(roll_no, datetime.datetime.now().month, datetime.datetime.now().year)
+
+				msg["breakfast"]=meals["breakfast"]
+				msg["lunch"]=meals["lunch"]
+				msg["dinner"]=meals["dinner"]
+				msg["bcancel"]=meals["bcancel"]
+				msg["lcancel"]=meals["lcancel"]
+				msg["dcancel"]=meals["dcancel"]
+				json_obj = json.dumps(msg)
+				return render_template("dashboard.html", message=json_obj)
