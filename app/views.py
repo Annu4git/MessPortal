@@ -55,9 +55,13 @@ def authenticate():
 			else:
 				
 				json_obj = json.dumps(msg)
-				
+				print "s11"
+				print session
 				session[email] = msg["roll_no"]
-
+				session["name"] = msg["name"]
+				session["roll_no"] = msg["roll_no"]
+				print "s22"
+				print session
 				resp = make_response(render_template("dashboard.html", message=json_obj))
 				resp.set_cookie('email', email)
 				resp.set_cookie('name', msg["name"])

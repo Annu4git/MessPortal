@@ -2,26 +2,53 @@ import sqlite3 as sql
 import json
 import model
 import datetime
+import bcrypt
+from app import app
 from flask import session
 
 
 def authenticate_student(request):
-
+	print "in authenticate student : "
+	print app.no_of_cancellations_allowed
+	print "========================="
 	msg={}
-	
+	dynamic_salt=""
+	hashed=""
 	try:
 		with sql.connect("mess_portal.db") as con:
 			con.row_factory = sql.Row
 			cur = con.cursor()
-			# query="select * from student_profile where (email ='"+ request.form['email'] +"' and password ='" + request.form['password'] + "')"
-			# print "login query : ",query
-			#cur.execute(query)
+			
+			# query_args = [request.form['email'],]
+			# print query_args
+			# cur.execute("select * from student_profile where email='" + request.form['email'] + "'")
+			
+			# row = cur.fetchone()
+
+			# if(len(row)>0):
+			# 	dynamic_salt = row[7]
+			# 	hashed = row[8]
+			# else:
+			# 	raise ValueError('')
+
+			# print "cur execute 1"
+			# static_salt=app.static_salt
+			# print "cur execute 2"
+			# password = request.form['password']
+			# print "cur execute 3"
+			# salted_password = static_salt + password
+			# print "cur execute 4"
+			# calculated_hashed = bcrypt.hashpw(salted_password, dynamic_salt)
+			# print "calculated_hashed : ", calculated_hashed
+			# print "hashed : ", hashed 
+
 			query_args = [request.form['email'], request.form['password']]
 			print query_args
 			cur.execute("select * from student_profile where (email=? and password=?)", query_args)
-			print "execute authenticate student"
+			
 			row = cur.fetchone()
-			if(len(row)>0):
+			# if(calculated_hashed == hashed):
+			if(len(row) > 0):
 				roll_no = row[0]
 
 				msg["roll_no"]=roll_no
