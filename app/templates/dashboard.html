@@ -151,6 +151,8 @@ body {font-family: Verdana, sans-serif; /*background-image: url('bhakt.jpg')*/;}
     msg=msg.replace(/&#34;/g,'"');
     var data = JSON.parse(msg);
     var roll_no = data["roll_no"];
+    
+   // x.innerHTML=data["breakfast"][curr_day-1];
 
     function show_month_year()
     {
@@ -247,9 +249,33 @@ body {font-family: Verdana, sans-serif; /*background-image: url('bhakt.jpg')*/;}
         var year_label=document.getElementById("cur_year");
         var daysToSkip=firstDay.getDay();
         var daysToPrint=lastDay.getDate();
+        var curr_day=date.getDate();
+        if(data['bcancel'][curr_day-1]==0){
+           document.getElementById("breakfastbutton").value="Cancel";
+           document.getElementById("mybreakfast").innerHTML="Breakfast: "+data["breakfast"][curr_day-1];
+           }
+        else{
+           document.getElementById("breakfastbutton").value="Uncancel";
+           document.getElementById("mybreakfast").innerHTML="Breakfast: Cancelled"; 
+         }
 
+        if(data['lcancel'][curr_day-1]==0){
+           document.getElementById("lunchbutton").value="Cancel";
+           document.getElementById("mylunch").innerHTML="Lunch: "+data["lunch"][curr_day-1];
+         }
+        else{
+            document.getElementById("lunchbutton").value="Uncancel";
+            document.getElementById("mylunch").innerHTML="Lunch: Cancelled"; 
+         }
 
-        
+        if(data['dcancel'][curr_day-1]==0){
+           document.getElementById("dinnerbutton").value="Cancel";
+           document.getElementById("mydinner").innerHTML="Dinner: "+data["dinner"][curr_day-1];
+         }
+        else{
+           document.getElementById("dinnerbutton").value="Uncancel";
+           document.getElementById("mydinner").innerHTML="Dinner: Cancelled"; 
+        }
         for(i=0;i<daysToSkip;i++)
         {
             var li = document.createElement("li");
@@ -271,8 +297,10 @@ body {font-family: Verdana, sans-serif; /*background-image: url('bhakt.jpg')*/;}
             // console.log(meals);
 
             //Testing
+            
             var mess1=""
             if(data["bcancel"][i]=="1"){
+
               mess1="<font size=2>Cancelled<br>";
             }
             else
@@ -371,23 +399,31 @@ body {font-family: Verdana, sans-serif; /*background-image: url('bhakt.jpg')*/;}
   <div style="float:left;width:25%;height:40%; padding: 0px 10px 0px 10px;">
       <center>
           <br>  <b><div style="background-color: #1abc9c;margin-bottom:10px;padding-top:7px;color:white;">
-        UPCOMING MEALS</b><br>
+        TODAY'S MEAL</b><br>
       </div>  
       <div style="background-color: #1abc9c;margin-bottom:10px;padding-top:7px;color:white;border-radius: 10px">
-        Breakfast:NORTH<br>
-        <button type="button" class="btn btn-warning" style="margin-bottom: 10px;height:30px;margin-top:7px; ">Menu</button>
-        <button type="button" class="btn btn-danger" style="margin-bottom: 10px;height:30px;margin-top:7px; ">Cancel</button>
+        <p id="mybreakfast"></p>
+    <form  method="post">
+        <button type="button" class="btn btn-warning" style="margin-bottom: 10px;height:30px;margin-top:4px; ">Menu</button>
+
+      <input type="submit" id="breakfastbutton" value="Cancel" formaction="/cancelcurrbreakfast" class="btn btn-danger" style="margin-bottom: 10px;height:30px;margin-top:4px;">
+      </div>
+      </form>
+
+      
+      <div style="background-color: #1abc9c;margin-bottom:10px;padding-top:7px;color:white;border-radius: 10px ">
+        <p id="mylunch"></p>
+        <form method="post">
+        <button type="button" class="btn btn-warning" style="margin-bottom: 10px;height:30px;margin-top:4px; ">Menu</button>
+         <input type="submit" id="lunchbutton" value="Cancel" formaction="/cancelcurrlunch" class="btn btn-danger" style="margin-bottom: 10px;height:30px;margin-top:4px;">
+       </form>
       </div>
       <div style="background-color: #1abc9c;margin-bottom:10px;padding-top:7px;color:white;border-radius: 10px ">
-        Lunch:NORTH<br>
-        <button type="button" class="btn btn-warning" style="margin-bottom: 10px;height:30px;margin-top:7px; ">Menu</button>
-        <button type="button" class="btn btn-danger" style="margin-bottom: 10px;height:30px;margin-top:7px;">Cancel</button>
-      </div>
-      <div style="background-color: #1abc9c;margin-bottom:10px;padding-top:7px;color:white;border-radius: 10px ">
-        Dinner:NORTH<br>
-        <button type="button" class="btn btn-warning" style="margin-bottom: 10px;height:30px;margin-top:7px; ">Menu</button>
-        <button type="button" class="btn btn-danger" style="margin-bottom: 10px;height:30px;margin-top:7px;">Cancel</button>
-        
+        <p id="mydinner"></p>
+        <form method="post">
+        <button type="button" class="btn btn-warning" style="margin-bottom: 10px;height:30px;margin-top:4px; ">Menu</button>
+         <input type="submit" id="dinnerbutton" value="Cancel" formaction="/cancelcurrdinner" class="btn btn-danger" style="margin-bottom: 10px;height:30px;margin-top:4px;">
+        </form>
       </div>
 
     </center>
