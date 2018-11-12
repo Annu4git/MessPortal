@@ -39,6 +39,8 @@ def login():
 def logout():
 	email = request.cookies.get('email')
 	session.pop(email,None)
+	session.pop("name",None)
+	session.pop("roll_no",None)
 	return render_template("login.html")
 
 @app.route("/authenticate", methods=['POST'])
@@ -55,36 +57,62 @@ def authenticate():
 			else:
 				
 				json_obj = json.dumps(msg)
-				print "s11"
-				print session
+				
 				session[email] = msg["roll_no"]
 				session["name"] = msg["name"]
 				session["roll_no"] = msg["roll_no"]
 				roll_no=msg["roll_no"]
-				now = datetime.datetime.now()
-				print "s22"
-				print session
-				resp = make_response(render_template("dashboard.html", message=json_obj))
+
+				if msg["first_login"] == True:
+					resp = make_response(render_template("set_default_mess.html", message=json_obj))
+				else:
+					resp = make_response(render_template("dashboard.html", message=json_obj))
+
 				resp.set_cookie('email', email)
 				resp.set_cookie('name', msg["name"])
 
 			return resp
 
+@app.route("/firstlogin", methods=['POST'])
+def first_login():
+
+	if not session.get('name'):
+		return render_template('login.html')
+
+	email = request.form['email']
+	msg={}
+
+	if request.method == 'POST':
+			msg = loginp.authenticate_student(request)
+			
+			if msg['authenticate'] == False:
+				return render_template('login.html')
+			else:
+				
+				json_obj = json.dumps(msg)
+				
+				session[email] = msg["roll_no"]
+				session["name"] = msg["name"]
+				session["roll_no"] = msg["roll_no"]
+				roll_no=msg["roll_no"]
+
+				if msg["first_login"] == True:
+					resp = make_response(render_template("set_default_mess.html", message=json_obj))
+				else:
+					resp = make_response(render_template("dashboard.html", message=json_obj))
+
+				resp.set_cookie('email', email)
+				resp.set_cookie('name', msg["name"])
+
+	#return resp
+	return ""
+
 @app.route("/nextmonth", methods=['POST'])
 def nextmonth():
 	msg={}
 	email = request.cookies.get('email')
-	print
-	print
-	print "**************************************"
-	print "email : ", session[email]
 	json_obj = request.form['mydata']
 	json_data = json.loads(json_obj)
-	print json_data['month']
-	print json_data['year']
-	print
-	print
-	print "in nextmonth"
 
 	if request.method == 'POST':
 		
@@ -138,52 +166,57 @@ def get_meal_menu():
 
 @app.route("/cancelmeals.html")
 def cancelmeal():
+	if not session.get('name'):
+		return render_template('login.html')
 	return render_template("cancel_meals.html")	
 
 @app.route("/cancelmealstatus", methods=['POST'])
 def cancelmealstatus():
-	 formdate=request.form['demo']
-	 datearr=formdate.split('-')
-	 starting_date=datearr[0]
-	 ending_date_space=datearr[1].split(' ')
-	 ending_date=ending_date_space[1]
-	 start_arr=starting_date.split('/')
-	 end_arr=ending_date.split('/')
-	 start_day=start_arr[0]
-	 start_month=start_arr[1]
-	 start_year=start_arr[2]
-	 end_day=end_arr[0]
-	 end_month=end_arr[1]
-	 end_year=end_arr[2]
-	 breakfast = request.form.get('meal_type_1')
-	 lunch = request.form.get('meal_type_2')
-	 dinner = request.form.get('meal_type_3')
-	 msg={}
-	 print "Hey there change_meal_status"
-	 #try:
 
-	 meals = model.get_meal_registration_for_month(str(session['roll_no']), datetime.datetime.now().month, datetime.datetime.now().year)
-	 bfast_data=meals["breakfast"]
-	 lunch_data=meals["lunch"]
-	 dinner_data=meals["dinner"]
-	 with sql.connect("mess_portal.db") as con:
-			con.row_factory = sql.Row
-			cur = con.cursor()
-			if breakfast:
-														query="UPDATE meal_registration SET bbit = '1' WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
-														cur.execute(query)
-														con.commit()
-			if lunch:
-														query="UPDATE meal_registration SET lbit= '1' WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
-														cur.execute(query)
-														con.commit()
-			if dinner:
-														query="UPDATE meal_registration SET dbit= '1' WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"    
-														cur.execute(query)
-														con.commit()                    
-														print "working"
+
+	formdate=request.form['demo']
+	datearr=formdate.split('-')
+	starting_date=datearr[0]
+	ending_date_space=datearr[1].split(' ')
+	ending_date=ending_date_space[1]
+	start_arr=starting_date.split('/')
+	end_arr=ending_date.split('/')
+	start_day=start_arr[0]
+	start_month=start_arr[1]
+	start_year=start_arr[2]
+	end_day=end_arr[0]
+	end_month=end_arr[1]
+	end_year=end_arr[2]
+	breakfast = request.form.get('meal_type_1')
+	lunch = request.form.get('meal_type_2')
+	dinner = request.form.get('meal_type_3')
+	msg={}
+	print "Hey there change_meal_status"
+	#try:
+
+	meals = model.get_meal_registration_for_month(str(session['roll_no']), datetime.datetime.now().month, datetime.datetime.now().year)
+	bfast_data=meals["breakfast"]
+	lunch_data=meals["lunch"]
+	dinner_data=meals["dinner"]
+	with sql.connect("mess_portal.db") as con:
+		con.row_factory = sql.Row
+		cur = con.cursor()
+		if breakfast:
+													query="UPDATE meal_registration SET bbit = '1' WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
+													cur.execute(query)
+													con.commit()
+		if lunch:
+													query="UPDATE meal_registration SET lbit= '1' WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
+													cur.execute(query)
+													con.commit()
+		if dinner:
+													query="UPDATE meal_registration SET dbit= '1' WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"    
+													cur.execute(query)
+													con.commit()                    
+													print "working"
 	 
-	 return render_template("cancel_meals.html")
+	return render_template("cancel_meals.html")
+
 @app.route("/uncancelmealstatus", methods=['POST'])
 def uncancelmealstatus():
 	 formdate=request.form['demo']
@@ -228,9 +261,9 @@ def uncancelmealstatus():
 														print "working"
 	 
 	 return render_template("cancel_meals.html")
-@app.route("/home.html")
-def index():
-	return render_template("index.html")
+# @app.route("/home.html")
+# def index():
+# 	return render_template("index.html")
 
 @app.route("/studentprofile", methods = ['GET'])
 def get_student_profile():
@@ -375,14 +408,20 @@ def cancelcurrdinner():
 
 @app.route("/change_mess_registration.html")
 def change_mess_registration():
+	if not session.get('name'):
+		return render_template('login.html')
 	return render_template("change_mess_registration.html")	
 
 @app.route("/default_mess.html")
 def default_mess():
+	if not session.get('name'):
+		return render_template('login.html')
 	return render_template("default_mess.html")	
 
 @app.route("/dashboard.html")
 def show_dashboard():
+	if not session.get('name'):
+		return render_template('login.html')
 	msg={}
 	email = request.cookies.get('email')
 	if email in session:
@@ -410,6 +449,8 @@ def show_dashboard():
 
 @app.route("/change_mess_menu.html")
 def show_change_mess_menu():
+	if not session.get('name'):
+		return render_template('login.html')
 	return render_template("change_mess_menu.html")	
 
 @app.route("/changemenu", methods=['POST'])
@@ -432,6 +473,8 @@ def change_menu():
 
 @app.route("/change_default_mess_admin.html")
 def show_change_default_mess_admin():
+	if not session.get('name'):
+		return render_template('login.html')
 	return render_template("change_default_mess_admin.html")	
 
 @app.route("/change_default_mess", methods=['POST'])

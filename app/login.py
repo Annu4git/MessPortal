@@ -50,10 +50,16 @@ def authenticate_student(request):
 			# if(calculated_hashed == hashed):
 			if(len(row) > 0):
 				roll_no = row[0]
-
 				msg["roll_no"]=roll_no
 				msg["name"]=row[1]
 				msg["authenticate"]=True
+
+				if(row[4] == "NA"):
+					msg["first_login"] = True
+					return msg
+				else:
+					msg["first_login"] = False
+				
 				
 				meals = model.get_meal_registration_for_month(roll_no, datetime.datetime.now().month, datetime.datetime.now().year)
 
