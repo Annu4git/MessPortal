@@ -9,79 +9,63 @@
   <link href="lightpick.css" rel="stylesheet">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
- 
-<style>
-.collapsible {
-  background-color: #1abc9c;
-  color: white;
-  cursor: pointer;
-  padding: 18px;
-  width: 100%;
-  border: none;
-  text-align: left;
-  outline: none;
-  font-size: 15px;
-}
-
-.active, .collapsible:hover {
-  background-color: #1abc9d;
-}
-
-.content {
-  padding: 0 18px;
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.2s ease-out;
-  background-color: #f1f1f1;
-}
-</style>
-
-
-
-
-
-
-
-
-
 </head>
-
-
-
-
-<body onload="showpic()">
-
-{% include 'header.html'%}
-
+<body>
+<nav class="navbar" style="background:#1abc9c ;color:white;">
+  <div class="container-fluid" >
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">Home</a>
+    </div>  
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href="#"><span id="username" class="glyphicon glyphicon-user"></span></a></li>
+      <li><a id="btnLogout" href="../"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+    </ul>
+  </div>
+</nav>
 <div>
   <div style="float:left;width:25%;height:40%; padding: 0px 10px 0px 10px;">
-    {% include 'left_sidebar.html'%}      
+      <br>
+      <div style=" height:100%;">
+        
+        <button  style="width:100%;margin-top: 0px" type="button" class="btn btn-primary">View Mess Registration</button><br>
+        <button style="width:100%;margin-top: 10px"type="button" class="btn btn-success">Cancel Meals</button><br>
+        <button style="width:100%;margin-top: 10px"type="button" class="btn btn-info">Change Registration</button><br>
+        <button style="width:100%;margin-top: 10px"type="button" class="btn btn-warning">View Default Mess</button><br>
+      </div>
   </div>
 
 
 <div style="float:left;width:50%;height:40%; padding: 0px 10px 0px 10px;border-radius: 10px">
 
-<center><b> <h1>Default Mess</h1> </b></center><br><br>
+<center><b> <h3>Download Mess Registrations</h3> </b></center>
+    <br><br><center>
+    
+    <!------------------- -->
+    <form action="" method="">
+    <!------------------- -->
 
-	<div style="background-color: #1abc9c;margin-bottom:10px;padding-top:7px;padding-left:50px;padding-bottom:10px;color:white;border-radius: 10px">
-        <h3>Breakfast : <b>North</b></h3>
-        </div>
-        
-        <div style="background-color: #1abc9c;margin-bottom:10px;padding-top:7px;padding-left:50px;padding-bottom:10px;color:white;border-radius: 10px">
-        <h3>Lunch : <b>North</b></h3>
-        </div>
+    <table> 
+        <tr><td>Mess :</td><td> 
+                    <select name="name_of_mess">
+                      <option>Yuktahar</option><option>North</option>
+                      <option>South</option><option>Kadamb</option>
+                    </select>
+                  </td></tr>
+        <tr><td>Date :</td><td><input type="date"></td></tr>
+    </table>
+        <br><br>
+        <input type="submit" value="Submit">
+        </form>
+        <br><br>
 
-        <div style="background-color: #1abc9c;margin-bottom:10px;padding-top:7px;padding-left:50px;padding-bottom:10px;color:white;border-radius: 10px">
-        <h3>Dinner : <b>North</b></h3>
-        </div>
+    
 <br>
 
   
 
 </div>
   <div style="float:left;width:25%;height:40%; padding: 0px 10px 0px 10px;">
-      
+     
   </div>
 </div>
 <br>

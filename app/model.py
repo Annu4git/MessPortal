@@ -134,3 +134,36 @@ def get_meal_menu(meal, day):
 		print "connection fails get_mess_menu"
 		return "connection fails get_mess_menu"
 	return menu
+
+
+def change_menu(mess,day,meal,newmenu):
+	try:
+		with sql.connect("mess_portal.db") as con:
+			con.row_factory = sql.Row
+			cur = con.cursor()
+			print "this query"
+			query="update "+ mess +" set "+meal+"='" + newmenu + "' where day = '" + day+"'";
+			print query
+			cur.execute(query)
+			
+
+	except:
+		print "connection fails change_menu"
+		return "connection fails change_menu"
+
+def change_default_mess(student_rollno,default_breakfast_mess,default_lunch_mess,default_dinner_mess):
+	try:
+		with sql.connect("mess_portal.db") as con:
+			con.row_factory = sql.Row
+			cur = con.cursor()
+			print "this query"
+			query="update "+ "student_profile" +" set default_breakfast='"+default_breakfast_mess+"', default_lunch='"+default_lunch_mess+"', default_dinner='"+default_dinner_mess+"' where roll_no = "+ student_rollno
+
+			print query
+			cur.execute(query)
+			
+
+	except:
+		print "connection fails change_default_mess"
+		return "connection fails change_default_mess"
+

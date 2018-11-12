@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Default Mess</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link href="lightpick.css" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<script>
+function check(a)
+{
+    if(a==1)
+      document.getElementById("status_text").innerHTML="<b><font color='green'>Successfully Updated !</font></b>"
+}
+</script>
+
+<body onload="check('{{status}}')">
+{% include 'header.html' %}
+<div>
+  <div style="float:left;width:25%;height:40%; padding: 0px 10px 0px 10px;">
+      {% include 'left_sidebar.html' %}
+  </div>
+
+
+<div style="float:left;width:50%;height:40%; padding: 0px 10px 0px 10px;border-radius: 10px">
+
+<center><b> <h3>Change Default Mess</h3> </b></center>
+    <br><br><center>
+    
+    <!------------------- -->
+    <form method="post">
+    <!------------------- -->
+
+    <table> 
+        <tr><td>Student Roll Number :</td><td><input type="text" name="student_rollno"></td></tr>      
+        <tr><td>Breakfast :</td><td> 
+                    <select name="default_breakfast_mess">
+                      <option>Yuktahar</option><option>North</option>
+                      <option>South</option><option>Kadamba</option>
+                    </select>
+                  </td></tr>
+        <tr><td>Lunch :</td><td>
+                  <select name="default_lunch_mess">
+                    <option>Yuktahar</option><option>North</option>
+                    <option>South</option><option>Kadamba</option>
+                  </select>
+                </td></tr>
+        
+        <tr><td>Dinner :</td><td> 
+                  <select name="default_dinner_mess">
+                    <option>Yuktahar</option><option>North</option>
+                    <option>South</option><option>Kadamba</option>
+                  </select>
+                </td></tr>
+        </table>
+        <br><br>
+        <input type="submit" value="Submit" formaction="/change_default_mess">
+        </form>
+        <br><br>
+        <span id="status_text"></span>
+    
+<br>
+
+  
+
+</div>
+  <div style="float:left;width:25%;height:40%; padding: 0px 10px 0px 10px;">
+     
+  </div>
+</div>
+<br>
+<br><br>
+
+</body>
+</html>

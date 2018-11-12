@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Default Mess</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link href="lightpick.css" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+  {% include 'header.html' %}
+<div>
+  <div style="float:left;width:25%;height:40%; padding: 0px 10px 0px 10px;">
+      {% include 'right_sidebar.html' %}
+  </div>
+
+
+<div style="float:left;width:50%;height:40%; padding: 0px 10px 0px 10px;border-radius: 10px">
+
+<center><b> <h3>Set Your Default Mess</h3> </b><br>Choose wisely ! This cannot be undone.</center>
+		<br><br><center>
+		
+		<!------------------- -->
+		<form action="" method="">
+		<!------------------- -->
+
+		<table>	
+        <tr><td>Breakfast :</td><td> 
+        						<select name="default_breakfast_mess">
+        							<option>Yuktahar</option><option>North</option>
+        							<option>South</option><option>Kadamb</option>
+        						</select>
+        					</td></tr>
+        <tr><td>Lunch :</td><td>
+        					<select name="default_lunch_mess">
+        						<option>Yuktahar</option><option>North</option>
+        						<option>South</option><option>Kadamb</option>
+        					</select>
+        				</td></tr>
+        
+        <tr><td>Dinner :</td><td> 
+        					<select name="default_dinner_mess">
+        						<option>Yuktahar</option><option>North</option>
+        						<option>South</option><option>Kadamb</option>
+        					</select>
+        				</td></tr>
+        </table>
+        <br><br>
+        <input type="submit" value="Submit">
+        </form>
+        <br><br>
+
+    
+<br>
+
+  
+
+</div>
+  <div style="float:left;width:25%;height:40%; padding: 0px 10px 0px 10px;">
+     
+  </div>
+</div>
+<br>
+<br><br>
+
+
+
+
+
+<script  src="/static/js/home.js"></script>
+
+</body>
+</html>

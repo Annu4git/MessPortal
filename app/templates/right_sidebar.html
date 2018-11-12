@@ -1,0 +1,82 @@
+<script>
+function show_meal_data(meal)
+    {
+      var gsDayNames = [
+  'Sunday',
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday'
+];
+      var today = new Date();
+      var dd = today.getDate();
+      //ar d = new Date(today.getDate
+      
+      var dayName = gsDayNames[today.getDay()];
+      
+      json_obj_mess_menu = {
+          "meal" : meal,
+          "day" : dayName
+        }
+        $.post( "/getmealmenu", {
+        mydata_mess_menu: JSON.stringify(json_obj_mess_menu)
+        }, function(mess_menu_data){
+          console.log(mess_menu_data);  
+          mess_menu_data = JSON.parse(mess_menu_data);
+          
+          document.getElementById("meal_modal_day").innerHTML=dayName;
+
+          document.getElementById("mess_modal").innerHTML=mess_menu_data["mess"];
+          document.getElementById("meal_modal").innerHTML = mess_menu_data["meal_menu"];
+          
+          document.getElementById("meal_modal_date").innerHTML=today.getDate() + "-" +
+          (today.getMonth()+1) + "-" + today.getFullYear();
+
+          //meal_menu
+
+        });
+
+    }
+</script>
+
+
+
+<center>
+          <br>  <b><div style="background-color: #1abc9c;margin-bottom:10px;padding-top:7px;color:white;">
+        TODAY'S MEAL</b><br>
+      </div>  
+      <div style="background-color: #1abc9c;margin-bottom:10px;padding-top:7px;color:white;border-radius: 10px">
+        <p id="mybreakfast"></p>
+    <form  method="post">
+        <button type="button" class="btn btn-warning" style="margin-bottom: 10px;height:30px;margin-top:4px; " class='cal_button' data-toggle='modal' data-target='#mealModal'
+
+          onclick="show_meal_data('breakfast')" >Menu</button>
+
+      <input type="submit" id="breakfastbutton" value="Cancel" formaction="/cancelcurrbreakfast" class="btn btn-danger" style="margin-bottom: 10px;height:30px;margin-top:4px;">
+      </div>
+      </form>
+
+      
+      <div style="background-color: #1abc9c;margin-bottom:10px;padding-top:7px;color:white;border-radius: 10px ">
+        <p id="mylunch"></p>
+        <form method="post">
+        <button type="button" class="btn btn-warning" style="margin-bottom: 10px;height:30px;margin-top:4px; " class='cal_button' data-toggle='modal' data-target='#mealModal'
+        onclick="show_meal_data('lunch')">Menu</button>
+         
+
+         <input type="submit" id="lunchbutton" value="Cancel" formaction="/cancelcurrlunch" class="btn btn-danger" style="margin-bottom: 10px;height:30px;margin-top:4px;">
+       </form>
+      </div>
+      <div style="background-color: #1abc9c;margin-bottom:10px;padding-top:7px;color:white;border-radius: 10px ">
+        <p id="mydinner"></p>
+        <form method="post">
+        <button type="button" class="btn btn-warning" style="margin-bottom: 10px;height:30px;margin-top:4px; " class='cal_button' data-toggle='modal' data-target='#mealModal'
+        onclick="show_meal_data('dinner')">Menu</button>
+         <input type="submit" id="dinnerbutton" value="Cancel" formaction="/cancelcurrdinner" class="btn btn-danger" style="margin-bottom: 10px;height:30px;margin-top:4px;">
+        </form>
+      </div>
+
+    </center>
+  </div>

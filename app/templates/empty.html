@@ -50,13 +50,29 @@
 
 
 
-<body onload="showpic()">
+<body>
 
-{% include 'header.html'%}
-
+<nav class="navbar" style="background:#1abc9c ;color:white;">
+  <div class="container-fluid" >
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">Home</a>
+    </div>  
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href="#"><span id="username" class="glyphicon glyphicon-user"></span></a></li>
+      <li><a id="btnLogout" href="../"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+    </ul>
+  </div>
+</nav>
 <div>
   <div style="float:left;width:25%;height:40%; padding: 0px 10px 0px 10px;">
-    {% include 'left_sidebar.html'%}      
+      <br>
+      <div style=" height:100%;">
+        
+        <button  style="width:100%;margin-top: 0px" type="button" class="btn btn-primary">View Mess Registration</button><br>
+        <button style="width:100%;margin-top: 10px"type="button" class="btn btn-success">Cancel Meals</button><br>
+        <button style="width:100%;margin-top: 10px"type="button" class="btn btn-info">Change Registration</button><br>
+        <button style="width:100%;margin-top: 10px"type="button" class="btn btn-warning">View Default Mess</button><br>
+      </div>
   </div>
 
 
@@ -81,7 +97,25 @@
 
 </div>
   <div style="float:left;width:25%;height:40%; padding: 0px 10px 0px 10px;">
-      
+      <center><h3>Next Three Meals</h3><br>
+      <div style="background-color: #1abc9c;margin-bottom:10px;padding-top:7px;color:white;border-radius: 10px">
+        Breakfast : <b>North</b><br>
+        <button type="button" class="btn btn-warning" style="margin-bottom: 10px;height:30px;margin-top:7px; ">Menu</button>
+        <button type="button" class="btn btn-danger" style="margin-bottom: 10px;height:30px;margin-top:7px; ">Cancel</button>
+      </div>
+      <div style="background-color: #1abc9c;margin-bottom:10px;padding-top:7px;color:white;border-radius: 10px ">
+        Lunch : <b>North</b><br>
+        <button type="button" class="btn btn-warning" style="margin-bottom: 10px;height:30px;margin-top:7px; ">Menu</button>
+        <button type="button" class="btn btn-danger" style="margin-bottom: 10px;height:30px;margin-top:7px;">Cancel</button>
+      </div>
+      <div style="background-color: #1abc9c;margin-bottom:10px;padding-top:7px;color:white;border-radius: 10px ">
+        Dinner : <b>North</b><br>
+        <button type="button" class="btn btn-warning" style="margin-bottom: 10px;height:30px;margin-top:7px; ">Menu</button>
+        <button type="button" class="btn btn-danger" style="margin-bottom: 10px;height:30px;margin-top:7px;">Cancel</button>
+        
+      </div>
+
+    </center>
   </div>
 </div>
 <br>

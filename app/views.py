@@ -372,3 +372,79 @@ def cancelcurrdinner():
 				msg["dcancel"]=meals["dcancel"]
 				json_obj = json.dumps(msg)
 				return render_template("dashboard.html", message=json_obj)
+
+@app.route("/change_mess_registration.html")
+def change_mess_registration():
+	return render_template("change_mess_registration.html")	
+
+@app.route("/default_mess.html")
+def default_mess():
+	return render_template("default_mess.html")	
+
+@app.route("/dashboard.html")
+def show_dashboard():
+	msg={}
+	email = request.cookies.get('email')
+	if email in session:
+
+		roll_no = session[email]
+		msg["roll_no"] = roll_no
+		
+		name = request.cookies.get('name')
+		msg["name"]=name
+		msg["authenticate"]=True
+		meals = model.get_meal_registration_for_month(roll_no, datetime.datetime.now().month, datetime.datetime.now().year)
+
+		msg["breakfast"]=meals["breakfast"]
+		msg["lunch"]=meals["lunch"]
+		msg["dinner"]=meals["dinner"]
+		msg["bcancel"]=meals["bcancel"]
+		msg["lcancel"]=meals["lcancel"]
+		msg["dcancel"]=meals["dcancel"]
+		json_obj = json.dumps(msg)
+		return render_template("dashboard.html", message=json_obj)
+	else:
+		return render_template("login.html")	
+
+
+
+@app.route("/change_mess_menu.html")
+def show_change_mess_menu():
+	return render_template("change_mess_menu.html")	
+
+@app.route("/changemenu", methods=['POST'])
+def change_menu():
+	msg={}
+	
+	mess = request.form['mess']+"_menu";
+	day = request.form['day']
+	meal = request.form['meal']
+	newmenu = request.form['newmenu']
+	
+	msg["mess"]=mess
+	msg["day"]=day;
+	msg["meal"]=meal;
+	msg["newmenu"]=newmenu;
+	json_obj=json.dumps(msg)
+
+	model.change_menu(mess,day,meal,newmenu)
+	return render_template("change_mess_menu.html",status=1)
+
+@app.route("/change_default_mess_admin.html")
+def show_change_default_mess_admin():
+	return render_template("change_default_mess_admin.html")	
+
+@app.route("/change_default_mess", methods=['POST'])
+def change_default_mess():
+	msg={}
+	
+	student_rollno = request.form['student_rollno'];
+	default_breakfast_mess = request.form['default_breakfast_mess']
+	default_lunch_mess = request.form['default_lunch_mess']
+	default_dinner_mess = request.form['default_dinner_mess']
+	
+	model.change_default_mess(student_rollno,default_breakfast_mess,default_lunch_mess,default_dinner_mess)
+	return render_template("change_default_mess_admin.html",status=1)
+
+
+

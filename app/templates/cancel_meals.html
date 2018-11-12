@@ -50,33 +50,13 @@
 
 
 
-<body>
+<body onload="showpic()">
 
-<nav class="navbar" style="background:#1abc9c ;color:white;">
-  <div class="container-fluid" >
-    <div class="navbar-header">
-      <a class="navbar-brand" href="#">Home</a>
-    </div>  
-    <div class="navbar-header">
-      <a class="navbar-brand" href="#">Cancel Next Meal</a>
-    </div>
+{% include 'header.html'%}
 
-    <ul class="nav navbar-nav navbar-right">
-      <li><a href="#"><span id="username" class="glyphicon glyphicon-user"></span></a></li>
-      <li><a id="btnLogout" href="../"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
-    </ul>
-  </div>
-</nav>
 <div>
   <div style="float:left;width:25%;height:40%; padding: 0px 10px 0px 10px;">
-      <br>
-      <div style=" height:100%;">
-        
-        <button  style="width:100%;margin-top: 0px" type="button" class="btn btn-primary">View Mess Registration</button><br>
-        <button style="width:100%;margin-top: 10px"type="button" class="btn btn-success">Cancel Meals</button><br>
-        <button style="width:100%;margin-top: 10px"type="button" class="btn btn-info">Change Registration</button><br>
-        <button style="width:100%;margin-top: 10px"type="button" class="btn btn-warning">View Default Mess</button><br>
-      </div>
+    {% include 'left_sidebar.html'%}      
   </div>
 
 
@@ -85,17 +65,17 @@
 <b>Cancel Meals : </b><br><br>
 <b>Cancellations Left : Breakfast - 5  Lunch - 5 Dinner - 5</b>
 <button class="collapsible">Datewise Cancellation</button>
-<div class="content">
+<div class="content" style="">
   <br>
   <form  method="post">
-  
-  Date : <input type="text" id="demo" name="demo"><br>
-  Meals :<input type="checkbox" id="meal_type_1" name="meal_type_1" value="breakfast"> Breakfast
+  <center>
+  Date : <input type="text" id="demo" name="demo"><br><br>
+  Meals : <input type="checkbox" id="meal_type_1" name="meal_type_1" value="breakfast"> Breakfast
          <input type="checkbox" id="meal_type_2" name="meal_type_2" value="lunch"> Lunch
          <input type="checkbox" id="meal_type_3" name="meal_type_3" value="dinner"> Dinner
-         <br>
+         <br><br>
 
-         <input type="submit" value="Cancel Meal" formaction="/cancelmealstatus"><input type="submit" value="Uncancel Meal" formaction="/uncancelmealstatus"><br>
+         <input class="btn btn-warning" type="submit" value="Cancel Meal" formaction="/cancelmealstatus"> <input class="btn btn-danger" type="submit" value="Uncancel Meal" formaction="/uncancelmealstatus"><br>
   <br>
 </div>
 </form>
@@ -104,7 +84,7 @@
 <div class="content">
   <br>
   
-  
+  <center>
   Day : <select>
             <option value="monday">Monday</option>
             <option value="tuesday">Tuesday</option>
@@ -113,12 +93,12 @@
             <option value="friday">Friday</option>
             <option value="saturday">Saturday</option>
             <option value="sunday">Sunday</option>
-        </select> <br>
-  Meals :<input type="checkbox" name="meal_type_1" value="breakfast"> Breakfast
+        </select> <br><br>
+  Meals : <input type="checkbox" name="meal_type_1" value="breakfast"> Breakfast
          <input type="checkbox" name="meal_type_1" value="lunch"> Lunch
-         <input type="checkbox" name="meal_type_1" value="dinner"> Dinner<br>
+         <input type="checkbox" name="meal_type_1" value="dinner"> Dinner<br><br>
 
-        <button>Cancel Meals</button><button>UnCancel Meals</button><br>  
+        <button class="btn btn-warning">Cancel Meals</button> <button class="btn btn-danger">UnCancel Meals</button><br>  
 
   <br>
 </div>
@@ -128,25 +108,7 @@
 
 </div>
   <div style="float:left;width:25%;height:40%; padding: 0px 10px 0px 10px;">
-      <center>Next Three Meals<br>
-      <div style="background-color: #1abc9c;margin-bottom:10px;padding-top:7px;color:white;border-radius: 10px">
-        Breakfast:NORTH<br>
-        <button type="button" class="btn btn-warning" style="margin-bottom: 10px;height:30px;margin-top:7px; ">Menu</button>
-        <button type="button" class="btn btn-danger" style="margin-bottom: 10px;height:30px;margin-top:7px; ">Cancel</button>
-      </div>
-      <div style="background-color: #1abc9c;margin-bottom:10px;padding-top:7px;color:white;border-radius: 10px ">
-        Lunch:NORTH<br>
-        <button type="button" class="btn btn-warning" style="margin-bottom: 10px;height:30px;margin-top:7px; ">Menu</button>
-        <button type="button" class="btn btn-danger" style="margin-bottom: 10px;height:30px;margin-top:7px;">Cancel</button>
-      </div>
-      <div style="background-color: #1abc9c;margin-bottom:10px;padding-top:7px;color:white;border-radius: 10px ">
-        Dinner:NORTH<br>
-        <button type="button" class="btn btn-warning" style="margin-bottom: 10px;height:30px;margin-top:7px; ">Menu</button>
-        <button type="button" class="btn btn-danger" style="margin-bottom: 10px;height:30px;margin-top:7px;">Cancel</button>
-        
-      </div>
-
-    </center>
+      
   </div>
 </div>
 <br>
