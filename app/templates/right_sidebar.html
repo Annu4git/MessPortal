@@ -45,36 +45,37 @@ function show_meal_data(meal)
 
 <center>
           <br>  <b><div style="background-color: #1abc9c;margin-bottom:10px;padding-top:7px;color:white;">
-        TODAY'S MEAL</b><br>
+        UPCOMING MEALS</b><br>
       </div>  
       <div style="background-color: #1abc9c;margin-bottom:10px;padding-top:7px;color:white;border-radius: 10px">
-        <p id="mybreakfast"></p>
+        
     <form  method="post">
+         <p id="myI"></p>
         <button type="button" class="btn btn-warning" style="margin-bottom: 10px;height:30px;margin-top:4px; " class='cal_button' data-toggle='modal' data-target='#mealModal'
 
           onclick="show_meal_data('breakfast')" >Menu</button>
 
-      <input type="submit" id="breakfastbutton" value="Cancel" formaction="/cancelcurrbreakfast" class="btn btn-danger" style="margin-bottom: 10px;height:30px;margin-top:4px;">
+      <input type="submit" id="I" value="Cancel" formaction="/cancelcurrI" class="btn btn-danger" style="margin-bottom: 10px;height:30px;margin-top:4px;">
       </div>
       </form>
 
       
       <div style="background-color: #1abc9c;margin-bottom:10px;padding-top:7px;color:white;border-radius: 10px ">
-        <p id="mylunch"></p>
         <form method="post">
+        <p id="myII" ></p>
         <button type="button" class="btn btn-warning" style="margin-bottom: 10px;height:30px;margin-top:4px; " class='cal_button' data-toggle='modal' data-target='#mealModal'
         onclick="show_meal_data('lunch')">Menu</button>
          
 
-         <input type="submit" id="lunchbutton" value="Cancel" formaction="/cancelcurrlunch" class="btn btn-danger" style="margin-bottom: 10px;height:30px;margin-top:4px;">
+         <input type="submit" id="II" value="Cancel" formaction="/cancelcurrII" class="btn btn-danger" style="margin-bottom: 10px;height:30px;margin-top:4px;">
        </form>
       </div>
       <div style="background-color: #1abc9c;margin-bottom:10px;padding-top:7px;color:white;border-radius: 10px ">
-        <p id="mydinner"></p>
         <form method="post">
+        <p id="myIII"></p>
         <button type="button" class="btn btn-warning" style="margin-bottom: 10px;height:30px;margin-top:4px; " class='cal_button' data-toggle='modal' data-target='#mealModal'
         onclick="show_meal_data('dinner')">Menu</button>
-         <input type="submit" id="dinnerbutton" value="Cancel" formaction="/cancelcurrdinner" class="btn btn-danger" style="margin-bottom: 10px;height:30px;margin-top:4px;">
+         <input type="submit" id="III" value="Cancel" formaction="/cancelcurrIII" class="btn btn-danger" style="margin-bottom: 10px;height:30px;margin-top:4px;">
         </form>
       </div>
 
