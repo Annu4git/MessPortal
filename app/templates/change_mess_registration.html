@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-  <link href="lightpick.css" rel="stylesheet">
+  <link href="static/lightpick.css" rel="stylesheet">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
@@ -61,54 +61,56 @@
 
 <div style="float:left;width:50%;height:40%; padding: 0px 10px 0px 10px;border-radius: 10px">
 
-<b>Change Mess Registration : </b><br><br>
+<b><br><br>Change Mess Registration : </b><br><br>
 <button class="collapsible">Datewise Registration</button>
 <div class="content">
   <br>
+   <form  method="post">
   
-  
-  Date : <input type="text" id="demo" ><br>
-  Mess : <select>
+   Date : <input type="text" id="demo" name="demo"><br><br>
+  Mess : <select id="messname" name="messname">
             <option value="Yuktahar">Yuktahar</option>
             <option value="Kadamb">Kadamb</option>
             <option value="North">North</option>
             <option value="South">South</option>
-         </select> <button class="btn btn-success" style="float:right">Submit</button><br>
+            <input class="btn btn-success" style="float:right" type="Submit" value="Submit" formaction="/datewisemesschange">
+        <!-- </select> <button class="btn btn-success" style="float:right">Submit</button><br><!-->
   Meals :<input type="checkbox" name="meal_type_1" value="breakfast"> Breakfast
-         <input type="checkbox" name="meal_type_1" value="lunch"> Lunch
-         <input type="checkbox" name="meal_type_1" value="dinner"> Dinner<br>
-
-         
+         <input type="checkbox" name="meal_type_2" value="lunch"> Lunch
+         <input type="checkbox" name="meal_type_3" value="dinner"> Dinner<br>
+        
   <br>
 </div>
+</form>
   <br>
 <button class="collapsible">Daywise Registration</button>
 <div class="content">
   <br>
+  <form  method="post">
   
-  
-  Day : <select>
-            <option value="monday">Monday</option>
-            <option value="tuesday">Tuesday</option>
-            <option value="wednesday">Wednesday</option>
-            <option value="thursday">Thursday</option>
-            <option value="friday">Friday</option>
-            <option value="saturday">Saturday</option>
-            <option value="sunday">Sunday</option>
+  Day : <select id="changeday" name="changeday">
+            <option value="Monday">Monday</option>
+            <option value="Tuesday">Tuesday</option>
+            <option value="Wednesday">Wednesday</option>
+            <option value="Thursday">Thursday</option>
+            <option value="Friday">Friday</option>
+            <option value="Saturday">Saturday</option>
+            <option value="Sunday">Sunday</option>
         </select> <br>
-  Mess : <select>
+  Mess : <select id="messname1" name="messname1">
             <option value="Yuktahar">Yuktahar</option>
             <option value="Kadamb">Kadamb</option>
             <option value="North">North</option>
             <option value="South">South</option>
-         </select> <button class="btn btn-success" style="float:right">Submit</button><br>
+         </select> <input class="btn btn-success" style="float:right" type="Submit" value="Submit" formaction="/daywisemesschange">
   Meals :<input type="checkbox" name="meal_type_1" value="breakfast"> Breakfast
-         <input type="checkbox" name="meal_type_1" value="lunch"> Lunch
-         <input type="checkbox" name="meal_type_1" value="dinner"> Dinner<br>
+         <input type="checkbox" name="meal_type_2" value="lunch"> Lunch
+         <input type="checkbox" name="meal_type_3" value="dinner"> Dinner<br>
 
          
   <br>
 </div>
+</form>
 <br>
 <button class="collapsible">Monthly Registration</button>
 <div class="content">
@@ -149,14 +151,10 @@
 
 
 
-
-
-<script  src="/static/js/home.js"></script>
-
 </body>
 </html>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
-<script src="lightpick.js"></script>
+<script src="static/lightpick.js"></script>
 <script>
     
     new Lightpick({
