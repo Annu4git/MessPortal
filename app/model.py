@@ -225,3 +225,19 @@ def generatereport(name,day,month,year):
 	except:
 		print "connection fails generatereport"
 		return "connection fails generatereport"
+
+def getdefaultmess(roll):
+
+	try:
+		with sql.connect("mess_portal.db") as con:
+			con.row_factory = sql.Row
+			cur = con.cursor()
+			query="select default_breakfast, default_lunch, default_dinner from student_profile where roll_no='"+str(roll)+"'"
+			cur.execute(query)
+			breakfast=(cur.fetchall())
+			
+			return breakfast[0][0], breakfast[0][1], breakfast[0][2]
+
+	except:
+		print "connection fails getdefaultmess"
+		return "connection fails getdefaultmess"
