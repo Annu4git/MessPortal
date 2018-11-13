@@ -272,7 +272,7 @@ def cancelcurrI():
 				end_month=now.month
 				end_year=now.year
                 
-				if(hours>=19 and hours<=23):
+				if(hours>=22 and hours<=23):
 					start_day+=1
 					end_day+=1
 					mybit="bbit"
@@ -286,7 +286,7 @@ def cancelcurrI():
 				     mybit="lbit"
 				     checkcancel="lcancel"   
 
-				if(hours>=15 and hours<=18):
+				if(hours>=15 and hours<=21):
 				   mybit="dbit"
 				   checkcancel="dcancel"
 
@@ -335,7 +335,7 @@ def cancelcurrII():
 				end_day=now.day
 				end_month=now.month
 				end_year=now.year
-				if(hours>=19 and hours<=23):
+				if(hours>=22 and hours<=23):
 					start_day+=1
 					end_day+=1
 					mybit="lbit"
@@ -349,7 +349,7 @@ def cancelcurrII():
 				    mybit="dbit"
 				    checkcancel="dcancel"   
 
-				if(hours>=15 and hours<=18):
+				if(hours>=15 and hours<=21):
 					start_day+=1
 					end_day+=1
 					mybit="bbit"
@@ -398,7 +398,7 @@ def cancelcurrIII():
 				end_day=now.day
 				end_month=now.month
 				end_year=now.year
-				if(hours>=19 and hours<=23):
+				if(hours>=22 and hours<=23):
 					start_day+=1
 					end_day+=1
 					mybit="dbit"
@@ -414,7 +414,7 @@ def cancelcurrIII():
 					mybit="bbit"
 					checkcancel="bcancel"  
 
-				if(hours>=15 and hours<=18):
+				if(hours>=15 and hours<=21):
 					start_day+=1
 					end_day+=1
 					mybit="lbit"
