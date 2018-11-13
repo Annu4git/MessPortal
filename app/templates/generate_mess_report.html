@@ -10,38 +10,61 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
+<style>
+.btn
+{
+  margin-top: 5px;
+  width:50%;
+  height:3.5vw;
+}
+
+.modal-content
+{
+  background-color: white;
+  margin:5% auto auto auto;
+  border:1px solid #777;
+  width:60%;
+}
+
+</style>
+
+
+
+
 <body>
      {% include 'header.html' %}
 <div>
   <div style="float:left;width:25%;height:40%; padding: 0px 10px 0px 10px;">
-     {% include 'left_sidebar.html' %} 
+     .
   </div>
 
 
 <div style="float:left;width:50%;height:40%; padding: 0px 10px 0px 10px;border-radius: 10px">
 
-<center><b> <h3>Download Mess Registrations</h3> </b></center>
-    <br><br><center>
-    
+<center><b> <h3><u>Download Mess Registrations</u></h3> </b></center>
+    <center>
+    <div class="modal-content" >
     <!------------------- -->
+    <br><br>
     <form method="post">
     <!------------------- -->
 
     <table> 
-        <tr><td>Mess :</td><td> 
+        <tr><td>Mess : </td><td> 
                     <select name="name_of_mess">
                       <option>Yuktahar</option><option>North</option>
                       <option>South</option><option>Kadamba</option>
                     </select>
-                  </td></tr>
-        <tr><td>Date :</td><td><input name="report_date" type="date" required></td></tr>
+                  </td></tr><br>
+                  <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+        <tr><td>Date : </td><td><input name="report_date" type="date" required></td></tr>
     </table>
         <br><br>
-        <input formaction="\generatereport" type="submit" value="Submit">
+        <input class="btn btn-primary" formaction="\generatereport" type="submit" value="Submit">
         </form>
         <br><br>
 
-    
+    </div>
 <br>
 
   

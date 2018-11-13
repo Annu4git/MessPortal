@@ -35,6 +35,23 @@
   transition: max-height 0.2s ease-out;
   background-color: #f1f1f1;
 }
+.btn
+{
+  margin-top: 5px;
+  width:30%;
+  height:3.5vw;
+}
+
+.modal-content
+{
+  background-color: white;
+  margin:5% auto auto auto;
+  border:1px solid #777;
+  width:80%;
+}
+
+
+
 </style>
 
 
@@ -63,24 +80,32 @@ function check(a)
 {%include 'header.html'%}
 <div>
   <div style="float:left;width:25%;height:40%; padding: 0px 10px 0px 10px;">
-      {%include 'left_sidebar.html'%}
+      &nbsp;
   </div>
 
 
   <div style="float:left;width:50%;height:40%; padding: 0px 10px 0px 10px;border-radius: 10px">
-  <b>Change Mess Menu</b><br>
+  <center>
+  <b><h3><u>Change Mess Menu</u></h3></b>
+  <div class="modal-content" >
+      <br><br>
+
+  
   <form name="mess_menu" method="post">
-  Mess : 
-  <select name="mess">
+  <table>
+    <tr>
+
+    <td>Mess : </td> 
+  <td><select name="mess">
     <option>yuktahar</option>
     <option>kadamba</option>
     <option>north</option>
     <option>south</option>
-  </select>
-  <br><br>
+  </select></td></tr>
+  <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
 
-  Day : 
-  <select name="day">
+  <tr><td>Day : </td> 
+  <td><select name="day">
     <option>Sunday</option>
     <option>Monday</option>
     <option>Tuesday</option>
@@ -88,38 +113,33 @@ function check(a)
     <option>Thursday</option>
     <option>Friday</option>
     <option>Saturday</option>
-  </select>
-  <br><br>
-
-  Meal : 
-  <select name="meal">
+  </select></td></tr>
+  <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+  <tr>
+    <td>
+  Meal : </td> 
+  <td><select name="meal">
     <option>breakfast</option>
     <option>lunch</option>
     <option>dinner</option>
-  </select>
-  <br><br>
-  
-  New Menu : 
-  <input type="text" name="newmenu" required>
-  <br><br>
-
-  <input class="btn btn-success" formaction="/changemenu" type="submit" value="submit">
+  </select></td>
+  </tr>
+  <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+  <tr><td>
+  New Menu : </td> 
+  <td><input type="text" name="newmenu" required></td></tr>
+</table>
+<br>
+  <input class="btn btn-primary" formaction="/changemenu" type="submit" value="submit">
   <br><br>
   <span id="status_text"></span>
   </div>
-  
+  </form>
+</div>
+</center>
   <div style="float:left;width:25%;height:40%; padding: 0px 10px 0px 10px;">
       
   </div>
 </div>
-<br>
-<br><br>
-
-
-
-
-
-<script  src="/static/js/home.js"></script>
-
 </body>
 </html>

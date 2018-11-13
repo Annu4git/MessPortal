@@ -10,6 +10,26 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
+
+<style>
+.btn
+{
+  margin-top: 5px;
+  width:30%;
+  height:3.5vw;
+}
+
+.modal-content
+{
+  background-color: white;
+  margin:5% auto auto auto;
+  border:1px solid #777;
+  width:80%;
+}
+
+</style>
+
+
 <script>
 function check(a)
 {
@@ -22,49 +42,53 @@ function check(a)
 {% include 'header.html' %}
 <div>
   <div style="float:left;width:25%;height:40%; padding: 0px 10px 0px 10px;">
-      {% include 'left_sidebar.html' %}
+      &nbsp;
   </div>
 
 
 <div style="float:left;width:50%;height:40%; padding: 0px 10px 0px 10px;border-radius: 10px">
 
-<center><b> <h3>Change Default Mess</h3> </b></center>
-    <br><br><center>
-    
+<center><b> <h3><u>Change Default Mess</u></h3> </b></center>
+    <center>
+    <div class="modal-content" >
+      <br><br>
     <!------------------- -->
     <form method="post">
     <!------------------- -->
 
     <table> 
-        <tr><td>Student Roll Number :</td><td><input type="text" name="student_rollno"></td></tr>      
-        <tr><td>Breakfast :</td><td> 
-                    <select name="default_breakfast_mess">
+        <tr><td>Student Roll Number : </td><td><input type="text" name="student_rollno" required></td></tr>      
+        <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+        <tr><td>Breakfast : </td><td> 
+                    <select name="default_breakfast_mess" required>
                       <option>Yuktahar</option><option>North</option>
                       <option>South</option><option>Kadamba</option>
                     </select>
                   </td></tr>
-        <tr><td>Lunch :</td><td>
-                  <select name="default_lunch_mess">
+                  <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+        <tr><td>Lunch : </td><td>
+                  <select name="default_lunch_mess" required>
                     <option>Yuktahar</option><option>North</option>
                     <option>South</option><option>Kadamba</option>
                   </select>
                 </td></tr>
-        
-        <tr><td>Dinner :</td><td> 
-                  <select name="default_dinner_mess">
+        <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+        <tr><td>Dinner : </td><td> 
+                  <select name="default_dinner_mess" required>
                     <option>Yuktahar</option><option>North</option>
                     <option>South</option><option>Kadamba</option>
                   </select>
                 </td></tr>
+                <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
         </table>
-        <br><br>
-        <input type="submit" value="Submit" formaction="/change_default_mess">
+        
+        <input class="btn btn-primary" type="submit" value="Submit" formaction="/change_default_mess">
         </form>
-        <br><br>
+     
         <span id="status_text"></span>
     
 <br>
-
+      </div>
   
 
 </div>
@@ -72,8 +96,5 @@ function check(a)
      
   </div>
 </div>
-<br>
-<br><br>
-
 </body>
 </html>
