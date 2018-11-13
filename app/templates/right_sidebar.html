@@ -1,7 +1,8 @@
 <script>
-function show_meal_data(meal)
+function show_meal_data(button_name)
     {
-      var gsDayNames = [
+
+     var gsDayNames = [
   'Sunday',
   'Monday',
   'Tuesday',
@@ -10,18 +11,80 @@ function show_meal_data(meal)
   'Friday',
   'Saturday'
 ];
+ 
+     
       var today = new Date();
       var dd = today.getDate();
-      //ar d = new Date(today.getDate
-      
+      var hours=today.getHours();
       var dayName = gsDayNames[today.getDay()];
+      var x=0
+      if(hours>=22 && hours<=23){
+        if(button_name=="menuI"){
+          meal="breakfast";
+          dayName = gsDayNames[today.getDay()+1];
+          x+=1;
+        }
+      if(button_name=="menuII"){
+          meal="lunch";
+          dayName = gsDayNames[today.getDay()+1];
+          x+=1;
+        }
+      if(button_name=="menuIII"){
+          meal="dinner";
+          dayName = gsDayNames[today.getDay()+1];
+          x+=1;
+        } 
+      }
+      if(hours>=0 && hours<=9){
+        if(button_name=="menuI"){
+           meal="breakfast";
+         }
+        if(button_name=="menuII"){
+          meal="lunch";
+        }
+        if(button_name=="menuIII"){
+          meal="dinner";
+        }  
+      }
+      if(hours>=10 && hours<=14){
+        if(button_name=="menuI"){
+           meal="lunch";
+         }
+        if(button_name=="menuII"){
+           meal="dinner";
+         } 
+        if(button_name=="menuIII"){
+           meal="breakfast";
+           dayName = gsDayNames[today.getDay()+1];
+           x+=1;
+         } 
+      }
+      if(hours>=15 && hours<=21){
+        if(button_name=="menuI"){
+          meal="dinner";
+        }
+        if(button_name=="menuII"){
+           meal="breakfast";
+           dayName = gsDayNames[today.getDay()+1];
+           x+=1;
+         } 
+        if(button_name=="menuIII"){
+           meal="lunch";
+           dayName = gsDayNames[today.getDay()+1];
+           x+=1;
+         } 
+        
+      }  
+
       
       json_obj_mess_menu = {
           "meal" : meal,
-          "day" : dayName
+          "day" : dayName,
+          "bname" :button_name
         }
         $.post( "/getmealmenu", {
         mydata_mess_menu: JSON.stringify(json_obj_mess_menu)
+
         }, function(mess_menu_data){
           console.log(mess_menu_data);  
           mess_menu_data = JSON.parse(mess_menu_data);
@@ -31,7 +94,7 @@ function show_meal_data(meal)
           document.getElementById("mess_modal").innerHTML=mess_menu_data["mess"];
           document.getElementById("meal_modal").innerHTML = mess_menu_data["meal_menu"];
           
-          document.getElementById("meal_modal_date").innerHTML=today.getDate() + "-" +
+          document.getElementById("meal_modal_date").innerHTML=(today.getDate()+x) + "-" +
           (today.getMonth()+1) + "-" + today.getFullYear();
 
           //meal_menu
@@ -53,7 +116,7 @@ function show_meal_data(meal)
          <p id="myI"></p>
         <button type="button" class="btn btn-warning" style="margin-bottom: 10px;height:30px;margin-top:4px; " class='cal_button' data-toggle='modal' data-target='#mealModal'
 
-          onclick="show_meal_data('breakfast')" >Menu</button>
+          onclick="show_meal_data('menuI')" >Menu</button>
 
       <input type="submit" id="I" value="Cancel" formaction="/cancelcurrI" class="btn btn-danger" style="margin-bottom: 10px;height:30px;margin-top:4px;">
       </div>
@@ -64,7 +127,7 @@ function show_meal_data(meal)
         <form method="post">
         <p id="myII" ></p>
         <button type="button" class="btn btn-warning" style="margin-bottom: 10px;height:30px;margin-top:4px; " class='cal_button' data-toggle='modal' data-target='#mealModal'
-        onclick="show_meal_data('lunch')">Menu</button>
+        onclick="show_meal_data('menuII')">Menu</button>
          
 
          <input type="submit" id="II" value="Cancel" formaction="/cancelcurrII" class="btn btn-danger" style="margin-bottom: 10px;height:30px;margin-top:4px;">
@@ -74,10 +137,10 @@ function show_meal_data(meal)
         <form method="post">
         <p id="myIII"></p>
         <button type="button" class="btn btn-warning" style="margin-bottom: 10px;height:30px;margin-top:4px; " class='cal_button' data-toggle='modal' data-target='#mealModal'
-        onclick="show_meal_data('dinner')">Menu</button>
+        onclick="show_meal_data('menuIII')">Menu</button>
          <input type="submit" id="III" value="Cancel" formaction="/cancelcurrIII" class="btn btn-danger" style="margin-bottom: 10px;height:30px;margin-top:4px;">
         </form>
       </div>
 
     </center>
-  </div>
+</div>
