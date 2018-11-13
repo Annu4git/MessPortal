@@ -813,3 +813,11 @@ def show_logout_page():
 @app.route("/login.html")
 def show_login_page():
 	return render_template("/login.html")
+
+@app.route("/getdefaultmess")
+def get_def_mess():
+	print "----------------------------------------------"
+	a,b,c=model.getdefaultmess(session["roll_no"])
+
+	return render_template("/default_mess.html",mess1=a,mess2=b,mess3=c)
+
