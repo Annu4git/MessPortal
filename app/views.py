@@ -673,4 +673,56 @@ def daywisemesschange():
 
 		return render_template("change_mess_registration.html")
 
+@app.route("/generate_mess_report.html")
+def show_generate_report():
+	return render_template("generate_mess_report.html")
+
+
+@app.route("/generatereport",methods=['POST'])
+def generatereport():
+	msg={}
+	name_of_mess=request.form['name_of_mess']
+	report_date=request.form['report_date']
+
+	report_date=report_date.split("-")
+
+	day=report_date[2]
+	month=report_date[1]
+	year=report_date[0]
+
+	bdata,ldata,ddata=model.generatereport(name_of_mess,day,month,year)
+
+	msg["breakfast_list"]=(bdata)
+	msg["lunch_list"]=(ldata)
+	msg["dinner_list"]=(ddata)
+	msg["mess"]=name_of_mess
+	msg["date"]=day+"/"+month+"/"+year
+	json_obj = json.dumps(msg)
+	return render_template("display_report_data.html", message=json_obj)
+
+@app.route("/mess_registration_stats.html")
+def show_mess_registration_stats():
+	return render_template("/mess_registration_stats.html")
+
+@app.route("/showmessstats")
+def messstats():
+	msg={}
+	
+
+	data=model.messstats()
+
+	# msg["breakfast_list"]=(bdata)
+	# msg["lunch_list"]=(ldata)
+	# msg["dinner_list"]=(ddata)
+	# msg["mess"]=name_of_mess
+	# msg["date"]=day+"/"+month+"/"+year
+	# json_obj = json.dumps(msg)
+	# return render_template("display_report_data.html", message=json_obj)
+
+
+	return "Hello"#render_template("/mess_registration_stats.html")
+
+
+
+
 
