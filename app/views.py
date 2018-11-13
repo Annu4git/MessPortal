@@ -987,11 +987,11 @@ def get_def_mess():
 
 @app.route("/bill")
 def billing():
-	#model.calculate_bill(session['roll_no'])
-	#print model.get_rates()
 	msg = model.get_bill_details(session['roll_no'], datetime.datetime.now().month, datetime.datetime.now().year)
 	canc = model.get_cancellations()
+	rate = model.get_rates()
 	json_obj = json.dumps(msg)
 	cancel = json.dumps(canc)
-	resp = make_response(render_template("billing.html", message=json_obj, canc=cancel))
+	rate = json.dumps(rate)
+	resp = make_response(render_template("billing.html", message=json_obj, canc=cancel, rate=rate))
 	return resp
