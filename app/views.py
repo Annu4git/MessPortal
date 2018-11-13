@@ -722,6 +722,18 @@ def messstats():
 
 	return "Hello"#render_template("/mess_registration_stats.html")
 
+@app.route("/admin_dashboard.html")
+def show_admin_dashboard():
+	return render_template("/admin_dashboard.html")
+
+@app.route("/logout.html")
+def show_logout_page():
+	return render_template("/logout.html")
+
+@app.route("/login.html")
+def show_login_page():
+	return render_template("/login.html")
+
 
 
 
