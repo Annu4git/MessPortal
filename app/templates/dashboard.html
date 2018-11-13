@@ -271,7 +271,7 @@ body {font-family: Verdana, sans-serif; /*background-image: url('bhakt.jpg')*/;}
         var d = new Date();
         var hours=d.getHours();
         document.getElementById("I").disabled = true;
-          if(hours>=19 && hours<=23){
+          if(hours>=22 && hours<=23){
                     myday=curr_day;
                    if(data['bcancel'][myday]==0 && curr_month==current_month && curr_year==current_year){
                    
@@ -377,7 +377,7 @@ body {font-family: Verdana, sans-serif; /*background-image: url('bhakt.jpg')*/;}
                    }
         }
 
-        if(hours>=15 && hours<=18){
+        if(hours>=15 && hours<=21){
                   var myday=curr_day-1;
                  if(data['dcancel'][myday]==0 && curr_month==current_month && curr_year==current_year){
                      document.getElementById("I").value="Cancel";
