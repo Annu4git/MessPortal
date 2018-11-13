@@ -35,6 +35,26 @@ def login():
 	else:
 		return render_template("login.html")
 
+@app.route("/admin")
+def login_admin():
+	msg={}
+	email = request.cookies.get('email')
+	print "email : ", email
+	print "session : ", session
+	print "cookies : ", request.cookies
+	if email in session:
+
+		roll_no = session[email]
+		msg["roll_no"] = roll_no
+		
+		name = request.cookies.get('name')
+		msg["name"]=name
+		msg["authenticate"]=True
+		json_obj = json.dumps(msg)
+		return render_template("dashboard.html", message=json_obj)
+	else:
+		return render_template("login_admin.html")
+
 @app.route("/logout")
 def logout():
 	email = request.cookies.get('email')
@@ -61,12 +81,39 @@ def authenticate():
 				session[email] = msg["roll_no"]
 				session["name"] = msg["name"]
 				session["roll_no"] = msg["roll_no"]
+				session["user"] = "student"
 				roll_no=msg["roll_no"]
 
 				if msg["first_login"] == True:
 					resp = make_response(render_template("set_default_mess.html", message=json_obj))
 				else:
 					resp = make_response(render_template("dashboard.html", message=json_obj))
+
+				resp.set_cookie('email', email)
+				resp.set_cookie('name', msg["name"])
+
+			return resp
+
+@app.route("/authenticate_admin", methods=['POST'])
+def authenticate_admin():
+	email = request.form['email']
+	msg={}
+
+	if request.method == 'POST':
+			
+			msg = loginp.authenticate_admin(request)
+			
+			if msg['authenticate'] == False:
+				return render_template('login.html')
+			else:
+				
+				json_obj = json.dumps(msg)
+				
+				session[email] = msg["admin_id"]
+				session["name"] = msg["name"]
+				session["user"] = "admin"
+				
+				resp = make_response(render_template("empty.html", message=json_obj))
 
 				resp.set_cookie('email', email)
 				resp.set_cookie('name', msg["name"])
@@ -168,6 +215,8 @@ def get_meal_menu():
 def cancelmeal():
 	if not session.get('name'):
 		return render_template('login.html')
+	if session["user"] != "student":
+		return "Not authorized"
 	return render_template("cancel_meals.html")	
 
 @app.route("/cancelmealstatus", methods=['POST'])
@@ -190,6 +239,14 @@ def cancelmealstatus():
 	breakfast = request.form.get('meal_type_1')
 	lunch = request.form.get('meal_type_2')
 	dinner = request.form.get('meal_type_3')
+	msg={}
+	print "Hey there change_meal_status"
+	#try:
+
+	meals = model.get_meal_registration_for_month(str(session['roll_no']), datetime.datetime.now().month, datetime.datetime.now().year)
+	bfast_data=meals["breakfast"]
+	lunch_data=meals["lunch"]
+	dinner_data=meals["dinner"]
 	with sql.connect("mess_portal.db") as con:
 		con.row_factory = sql.Row
 		cur = con.cursor()
@@ -227,6 +284,14 @@ def uncancelmealstatus():
 	 breakfast = request.form.get('meal_type_1')
 	 lunch = request.form.get('meal_type_2')
 	 dinner = request.form.get('meal_type_3')
+	 msg={}
+	 print "Hey there change_meal_status"
+	 #try:
+
+	 meals = model.get_meal_registration_for_month(str(session['roll_no']), datetime.datetime.now().month, datetime.datetime.now().year)
+	 bfast_data=meals["breakfast"]
+	 lunch_data=meals["lunch"]
+	 dinner_data=meals["dinner"]
 	 with sql.connect("mess_portal.db") as con:
 			con.row_factory = sql.Row
 			cur = con.cursor()
@@ -260,6 +325,8 @@ def get_meal_registration():
 	if request.method == "GET":
 		res = model.get_meal_registration()
 	return render_template("test.html", result = res, message = request.method)
+
+
 
 @app.route("/cancelcurrI", methods=['POST'])
 def cancelcurrI():
@@ -453,22 +520,29 @@ def cancelcurrIII():
 				json_obj = json.dumps(msg)
 				return render_template("dashboard.html", message=json_obj)
 
+				
 @app.route("/change_mess_registration.html")
 def change_mess_registration():
 	if not session.get('name'):
 		return render_template('login.html')
+	if session["user"] != "student":
+		return "Not authorized"
 	return render_template("change_mess_registration.html")	
 
 @app.route("/default_mess.html")
 def default_mess():
 	if not session.get('name'):
 		return render_template('login.html')
+	if session["user"] != "student":
+		return "Not authorized"
 	return render_template("default_mess.html")	
 
 @app.route("/dashboard.html")
 def show_dashboard():
 	if not session.get('name'):
 		return render_template('login.html')
+	if session["user"] != "student":
+		return "Not authorized"
 	msg={}
 	email = request.cookies.get('email')
 	if email in session:
@@ -498,6 +572,8 @@ def show_dashboard():
 def show_change_mess_menu():
 	if not session.get('name'):
 		return render_template('login.html')
+	if session["user"] != "student":
+		return "Not authorized"
 	return render_template("change_mess_menu.html")	
 
 @app.route("/changemenu", methods=['POST'])
@@ -522,6 +598,8 @@ def change_menu():
 def show_change_default_mess_admin():
 	if not session.get('name'):
 		return render_template('login.html')
+	if session["user"] != "student":
+		return "Not authorized"
 	return render_template("change_default_mess_admin.html")	
 
 @app.route("/change_default_mess", methods=['POST'])
@@ -535,6 +613,7 @@ def change_default_mess():
 	
 	model.change_default_mess(student_rollno,default_breakfast_mess,default_lunch_mess,default_dinner_mess)
 	return render_template("change_default_mess_admin.html",status=1)
+
 
 @app.route("/datewisemesschange", methods=['POST'])
 def datewisemesschange():
@@ -733,8 +812,3 @@ def show_logout_page():
 @app.route("/login.html")
 def show_login_page():
 	return render_template("/login.html")
-
-
-
-
-
