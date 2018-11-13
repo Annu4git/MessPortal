@@ -167,3 +167,44 @@ def change_default_mess(student_rollno,default_breakfast_mess,default_lunch_mess
 		print "connection fails change_default_mess"
 		return "connection fails change_default_mess"
 
+def generatereport(name,day,month,year):
+	try:
+		with sql.connect("mess_portal.db") as con:
+			con.row_factory = sql.Row
+			cur = con.cursor()
+			query="select roll_no from meal_registration where day='"+day+"' and month='"+month+"' and year='"+year+"' and breakfast='"+name+"'" 
+			cur.execute(query)
+			breakfast=(cur.fetchall())
+			
+			con.row_factory = sql.Row
+			cur = con.cursor()
+			query="select roll_no from meal_registration where day="+day+" and month="+month+" and year="+year+" and lunch='"+name+"'" 
+			cur.execute(query)
+			lunch=(cur.fetchall())
+			
+			con.row_factory = sql.Row
+			cur = con.cursor()
+			query="select roll_no from meal_registration where day="+day+" and month="+month+" and year="+year+" and dinner='"+name+"'" 
+			cur.execute(query)
+			dinner=(cur.fetchall())
+			
+			breakfast_data=[]
+			lunch_data=[]
+			dinner_data=[]
+
+			for i in breakfast:
+				breakfast_data.append(str(i[0]))
+			for i in lunch:
+				lunch_data.append(str(i[0]))
+			for i in dinner:
+				dinner_data.append(str(i[0]))
+
+			print breakfast_data
+			print lunch_data
+			print dinner_data
+
+			return breakfast_data,lunch_data,dinner_data
+
+	except:
+		print "connection fails generatereport"
+		return "connection fails generatereport"
