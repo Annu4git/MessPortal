@@ -9,6 +9,8 @@ from app import app
 
 @app.route("/")
 def login():
+	print "************************"
+	print session
 	msg={}
 	email = request.cookies.get('email')
 	print "email : ", email
@@ -18,10 +20,12 @@ def login():
 
 		roll_no = session[email]
 		msg["roll_no"] = roll_no
-		
-		name = request.cookies.get('name')
-		msg["name"]=name
+		msg["name"]=session["name"]
 		msg["authenticate"]=True
+
+		if session["first_login"] == True:
+			return render_template("set_default_mess.html")
+
 		meals = model.get_meal_registration_for_month(roll_no, datetime.datetime.now().month, datetime.datetime.now().year)
 
 		msg["breakfast"]=meals["breakfast"]
@@ -57,10 +61,11 @@ def login_admin():
 
 @app.route("/logout")
 def logout():
-	email = request.cookies.get('email')
-	session.pop(email,None)
-	session.pop("name",None)
-	session.pop("roll_no",None)
+	# email = request.cookies.get('email')
+	# session.pop(email,None)
+	# session.pop("name",None)
+	# session.pop("roll_no",None)
+	session.clear()
 	return render_template("login.html")
 
 @app.route("/authenticate", methods=['POST'])
@@ -85,8 +90,10 @@ def authenticate():
 				roll_no=msg["roll_no"]
 
 				if msg["first_login"] == True:
+					session["first_login"] = True
 					resp = make_response(render_template("set_default_mess.html", message=json_obj))
 				else:
+					session["first_login"] = False
 					resp = make_response(render_template("dashboard.html", message=json_obj))
 
 				resp.set_cookie('email', email)
@@ -120,39 +127,37 @@ def authenticate_admin():
 
 			return resp
 
-@app.route("/firstlogin", methods=['POST'])
-def first_login():
-
-	if not session.get('name'):
-		return render_template('login.html')
-
-	email = request.form['email']
-	msg={}
-
+@app.route("/setdefaultmess", methods=['POST'])
+def set_default_mess():
 	if request.method == 'POST':
-			msg = loginp.authenticate_student(request)
-			
-			if msg['authenticate'] == False:
-				return render_template('login.html')
-			else:
-				
-				json_obj = json.dumps(msg)
-				
-				session[email] = msg["roll_no"]
-				session["name"] = msg["name"]
-				session["roll_no"] = msg["roll_no"]
-				roll_no=msg["roll_no"]
 
-				if msg["first_login"] == True:
-					resp = make_response(render_template("set_default_mess.html", message=json_obj))
-				else:
-					resp = make_response(render_template("dashboard.html", message=json_obj))
+		roll_no = session["roll_no"]
+		default_breakfast_mess = request.form["default_breakfast_mess"]
+		default_lunch_mess = request.form["default_lunch_mess"]
+		default_dinner_mess = request.form["default_dinner_mess"]
 
-				resp.set_cookie('email', email)
-				resp.set_cookie('name', msg["name"])
+		result = model.set_default_mess(roll_no, default_breakfast_mess, default_lunch_mess, default_dinner_mess)
 
-	#return resp
-	return ""
+		if result == "success":
+			msg={}
+			email = request.cookies.get('email')
+			roll_no = session[email]
+			msg["roll_no"] = roll_no
+			msg["name"]=session["name"]
+			msg["authenticate"]=True
+			meals = model.get_meal_registration_for_month(roll_no, datetime.datetime.now().month, datetime.datetime.now().year)
+
+			msg["breakfast"]=meals["breakfast"]
+			msg["lunch"]=meals["lunch"]
+			msg["dinner"]=meals["dinner"]
+			msg["bcancel"]=meals["bcancel"]
+			msg["lcancel"]=meals["lcancel"]
+			msg["dcancel"]=meals["dcancel"]
+			json_obj = json.dumps(msg)
+			session["first_login"] = False
+			return render_template("dashboard.html", message=json_obj)
+		else:
+			return render_template("set_default_mess.html")
 
 @app.route("/nextmonth", methods=['POST'])
 def nextmonth():
@@ -171,10 +176,7 @@ def nextmonth():
 def get_mess_menu():
 	msg={}
 	email = request.cookies.get('email')
-	print
-	print
-	print "**************************************"
-	print "email : ", session[email]
+	
 	json_obj = request.form['mydata_mess_menu']
 	json_data = json.loads(json_obj)
 	breakfast = json_data['breakfast']
@@ -182,7 +184,7 @@ def get_mess_menu():
 	dinner = json_data['dinner']
 	day = json_data['day']
 	print "in get_mess_menu"
-	print day
+	
 	if request.method == 'POST':
 		
 		msg = model.get_mess_menu(breakfast, lunch, dinner, day)
@@ -194,16 +196,13 @@ def get_meal_menu():
 	print "getmealmenu"
 	msg={}
 	email = request.cookies.get('email')
-	print
-	print
-	print "**************************************"
-	print "email : ", session[email]
+	
 	json_obj = request.form['mydata_mess_menu']
 	json_data = json.loads(json_obj)
 	meal = json_data['meal']
 	day = json_data['day']
 	print "in get_meal_menu"
-	print day
+	
 	if request.method == 'POST':
 		
 		msg = model.get_meal_menu(meal, day)
@@ -217,12 +216,18 @@ def cancelmeal():
 		return render_template('login.html')
 	if session["user"] != "student":
 		return "Not authorized"
+	if session["first_login"] == True:
+		return render_template("set_default_mess.html")
 	return render_template("cancel_meals.html")	
 
 @app.route("/cancelmealstatus", methods=['POST'])
 def cancelmealstatus():
-
-
+	now = datetime.datetime.now()
+	hours=now.hour
+	curr_day=now.day
+	curr_month=now.month
+	curr_year=now.year
+   
 	formdate=request.form['demo']
 	datearr=formdate.split('-')
 	starting_date=datearr[0]
@@ -236,83 +241,177 @@ def cancelmealstatus():
 	end_day=end_arr[0]
 	end_month=end_arr[1]
 	end_year=end_arr[2]
+
+	if(int(curr_year)>int(start_year) or int(curr_year)>int(end_year)):
+		return render_template("cancel_meals.html")
+
+	if(int(curr_year)==int(start_year)):
+		if(int(curr_month)>int(start_month)):
+							return render_template("cancel_meals.html")
+		if(int(curr_month)==int(start_month)):
+		             if(int(curr_day)>int(start_day)):
+								return render_template("cancel_meals.html")     
+
+	if(int(start_year)>int(end_year)):
+				return render_template("cancel_meals.html")
+
 	breakfast = request.form.get('meal_type_1')
 	lunch = request.form.get('meal_type_2')
 	dinner = request.form.get('meal_type_3')
-	msg={}
-	print "Hey there change_meal_status"
-	#try:
-
-	meals = model.get_meal_registration_for_month(str(session['roll_no']), datetime.datetime.now().month, datetime.datetime.now().year)
-	bfast_data=meals["breakfast"]
-	lunch_data=meals["lunch"]
-	dinner_data=meals["dinner"]
 	with sql.connect("mess_portal.db") as con:
-		con.row_factory = sql.Row
-		cur = con.cursor()
-		if breakfast:
-													query="UPDATE meal_registration SET bbit = '1' WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
-													cur.execute(query)
-													con.commit()
-		if lunch:
-													query="UPDATE meal_registration SET lbit= '1' WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
-													cur.execute(query)
-													con.commit()
-		if dinner:
-													query="UPDATE meal_registration SET dbit= '1' WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"    
-													cur.execute(query)
-													con.commit()                    
-													print "working"
-	 
-	return render_template("cancel_meals.html")
+
+				con.row_factory = sql.Row
+				cur = con.cursor()
+				if(int(start_day)>int(end_day) and int(start_month)<int(end_month)):
+							if breakfast:
+								if(int(start_day)==int(curr_day)):
+								     return render_template("cancel_meals.html")
+
+								if(int(start_day)==int(curr_day+1) and hours>=19 and hours<=23):
+								    return render_template("cancel_meals.html")	
+								        
+								else:
+											query="UPDATE meal_registration SET bbit ='1' WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(start_day)+" and day<="+str(31)+" and month>="+str(start_month)+" and month<="+str(start_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
+											cur.execute(query)
+											query="UPDATE meal_registration SET bbit ='1' WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(1)+" and day<="+str(end_day)+" and month>="+str(end_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
+											cur.execute(query)
+											con.commit()
+							if lunch:
+									if(int(start_day)==int(curr_day) and hours>=7):
+									        return render_template("cancel_meals.html")
+									else:	
+
+											query="UPDATE meal_registration SET lbit ='1' WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(start_day)+" and day<="+str(31)+" and month>="+str(start_month)+" and month<="+str(start_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
+											cur.execute(query)
+											query="UPDATE meal_registration SET lbit ='1' WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(1)+" and day<="+str(end_day)+" and month>="+str(end_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
+											cur.execute(query)
+											con.commit()
+							if dinner:
+									if(int(start_day)==int(curr_day) and hours>=15):
+									      return render_template("cancel_meals.html")
+									else:	      
+											query="UPDATE meal_registration SET dbit ='1' WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(start_day)+" and day<="+str(31)+" and month>="+str(start_month)+" and month<="+str(start_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
+											cur.execute(query)
+											query="UPDATE meal_registration SET dbit ='1' WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(1)+" and day<="+str(end_day)+" and month>="+str(end_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
+											cur.execute(query)
+											con.commit()                    
+
+				else:
+							if breakfast:
+								print start_day
+								print curr_day
+
+								if(int(start_day)==int(curr_day)):
+								     return render_template("cancel_meals.html")
+
+								if(int(start_day)==int(curr_day+1) and hours>=19 and hours<=23):
+								    return render_template("cancel_meals.html")	
+								        
+								else:
+															query="UPDATE meal_registration SET bbit = '1' WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
+															cur.execute(query)
+															con.commit()
+							if lunch:
+								if(int(start_day)==int(curr_day) and hours>=7):
+								      return render_template("cancel_meals.html")
+								else:
+															query="UPDATE meal_registration SET lbit= '1' WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
+															cur.execute(query)
+															con.commit()
+							if dinner:
+								if(int(start_day)==int(curr_day) and hours>=15):
+									      return render_template("cancel_meals.html")
+								else:
+															query="UPDATE meal_registration SET dbit= '1' WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"    
+															cur.execute(query)
+															con.commit()                    
+															print "working"
+
+				return render_template("cancel_meals.html")
 
 @app.route("/uncancelmealstatus", methods=['POST'])
 def uncancelmealstatus():
-	 formdate=request.form['demo']
-	 datearr=formdate.split('-')
-	 starting_date=datearr[0]
-	 ending_date_space=datearr[1].split(' ')
-	 ending_date=ending_date_space[1]
-	 start_arr=starting_date.split('/')
-	 end_arr=ending_date.split('/')
-	 start_day=start_arr[0]
-	 start_month=start_arr[1]
-	 start_year=start_arr[2]
-	 end_day=end_arr[0]
-	 end_month=end_arr[1]
-	 end_year=end_arr[2]
-	 breakfast = request.form.get('meal_type_1')
-	 lunch = request.form.get('meal_type_2')
-	 dinner = request.form.get('meal_type_3')
-	 msg={}
-	 print "Hey there change_meal_status"
-	 #try:
+		now = datetime.datetime.now()
+		hours=now.hour
+		curr_day=now.day
+		curr_month=now.month
+		curr_year=now.year
 
-	 meals = model.get_meal_registration_for_month(str(session['roll_no']), datetime.datetime.now().month, datetime.datetime.now().year)
-	 bfast_data=meals["breakfast"]
-	 lunch_data=meals["lunch"]
-	 dinner_data=meals["dinner"]
-	 with sql.connect("mess_portal.db") as con:
-			con.row_factory = sql.Row
-			cur = con.cursor()
-			if breakfast:
-														query="UPDATE meal_registration SET bbit = '0' WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
-														cur.execute(query)
-														con.commit()
-			if lunch:
-														query="UPDATE meal_registration SET lbit= '0' WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
-														cur.execute(query)
-														con.commit()
-			if dinner:
-														query="UPDATE meal_registration SET dbit= '0' WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"    
-														cur.execute(query)
-														con.commit()                    
-														print "working"
-	 
-	 return render_template("cancel_meals.html")
-# @app.route("/home.html")
-# def index():
-# 	return render_template("index.html")
+		formdate=request.form['demo']
+		datearr=formdate.split('-')
+		starting_date=datearr[0]
+		ending_date_space=datearr[1].split(' ')
+		ending_date=ending_date_space[1]
+		start_arr=starting_date.split('/')
+		end_arr=ending_date.split('/')
+		start_day=start_arr[0]
+		start_month=start_arr[1]
+		start_year=start_arr[2]
+		end_day=end_arr[0]
+		end_month=end_arr[1]
+		end_year=end_arr[2]
+
+		if(int(curr_year)>int(start_year) or int(curr_year)>int(end_year)):
+		            return render_template("cancel_meals.html")
+
+		if(int(curr_year)==int(start_year)):
+		    if(int(curr_month)>int(start_month)):
+				return render_template("cancel_meals.html")
+		if(int(curr_month)==int(start_month)):
+		    if(int(curr_day)>int(start_day)):
+					return render_template("cancel_meals.html")     
+
+		if(int(start_year)>int(end_year)):
+		    return render_template("cancel_meals.html")
+
+
+
+
+
+		breakfast = request.form.get('meal_type_1')
+		lunch = request.form.get('meal_type_2')
+		dinner = request.form.get('meal_type_3')
+		with sql.connect("mess_portal.db") as con:
+				con.row_factory = sql.Row
+				cur = con.cursor()
+				if(start_day>end_day and start_month<end_month):
+							if breakfast:
+
+
+											query="UPDATE meal_registration SET bbit ='0' WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(start_day)+" and day<="+str(31)+" and month>="+str(start_month)+" and month<="+str(start_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
+											cur.execute(query)
+											query="UPDATE meal_registration SET bbit ='0' WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(1)+" and day<="+str(end_day)+" and month>="+str(end_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
+											cur.execute(query)
+											con.commit()
+							if lunch:
+											query="UPDATE meal_registration SET lbit ='0' WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(start_day)+" and day<="+str(31)+" and month>="+str(start_month)+" and month<="+str(start_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
+											cur.execute(query)
+											query="UPDATE meal_registration SET lbit ='0' WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(1)+" and day<="+str(end_day)+" and month>="+str(end_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
+											cur.execute(query)
+											con.commit()
+							if dinner:
+											query="UPDATE meal_registration SET dbit ='0' WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(start_day)+" and day<="+str(31)+" and month>="+str(start_month)+" and month<="+str(start_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
+											cur.execute(query)
+											query="UPDATE meal_registration SET dbit ='0' WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(1)+" and day<="+str(end_day)+" and month>="+str(end_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
+											cur.execute(query)
+											con.commit()                    
+
+				else:
+							if breakfast:
+															query="UPDATE meal_registration SET bbit = '0' WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
+															cur.execute(query)
+															con.commit()
+							if lunch:
+															query="UPDATE meal_registration SET lbit= '0' WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
+															cur.execute(query)
+															con.commit()
+							if dinner:
+															query="UPDATE meal_registration SET dbit= '0' WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"    
+															cur.execute(query)
+															con.commit()                    
+															print "working"
+
+				return render_template("cancel_meals.html")
 
 @app.route("/studentprofile", methods = ['GET'])
 def get_student_profile():
@@ -371,9 +470,6 @@ def cancelcurrI():
 						con.commit()
 				msg={}
 				email = request.cookies.get('email')
-				print "email : ", email
-				print "session : ", session
-				print "cookies : ", request.cookies
 
 				roll_no = session[email]
 				msg["roll_no"] = roll_no
@@ -434,9 +530,7 @@ def cancelcurrII():
 						con.commit()
 				msg={}
 				email = request.cookies.get('email')
-				print "email : ", email
-				print "session : ", session
-				print "cookies : ", request.cookies
+				
 
 				roll_no = session[email]
 				msg["roll_no"] = roll_no
@@ -499,10 +593,7 @@ def cancelcurrIII():
 						con.commit()
 				msg={}
 				email = request.cookies.get('email')
-				print "email : ", email
-				print "session : ", session
-				print "cookies : ", request.cookies
-
+				
 				roll_no = session[email]
 				msg["roll_no"] = roll_no
 
@@ -527,6 +618,8 @@ def change_mess_registration():
 		return render_template('login.html')
 	if session["user"] != "student":
 		return "Not authorized"
+	if session["first_login"] == True:
+		return render_template("set_default_mess.html")
 	return render_template("change_mess_registration.html")	
 
 @app.route("/default_mess.html")
@@ -535,6 +628,8 @@ def default_mess():
 		return render_template('login.html')
 	if session["user"] != "student":
 		return "Not authorized"
+	if session["first_login"] == True:
+		return render_template("set_default_mess.html")
 	return render_template("default_mess.html")	
 
 @app.route("/dashboard.html")
@@ -543,6 +638,8 @@ def show_dashboard():
 		return render_template('login.html')
 	if session["user"] != "student":
 		return "Not authorized"
+	if session["first_login"] == True:
+		return render_template("set_default_mess.html")
 	msg={}
 	email = request.cookies.get('email')
 	if email in session:
@@ -574,6 +671,8 @@ def show_change_mess_menu():
 		return render_template('login.html')
 	if session["user"] != "student":
 		return "Not authorized"
+	if session["first_login"] == True:
+		return render_template("set_default_mess.html")
 	return render_template("change_mess_menu.html")	
 
 @app.route("/changemenu", methods=['POST'])
@@ -600,6 +699,8 @@ def show_change_default_mess_admin():
 		return render_template('login.html')
 	if session["user"] != "student":
 		return "Not authorized"
+	if session["first_login"] == True:
+		return render_template("set_default_mess.html")
 	return render_template("change_default_mess_admin.html")	
 
 @app.route("/change_default_mess", methods=['POST'])
@@ -617,6 +718,12 @@ def change_default_mess():
 
 @app.route("/datewisemesschange", methods=['POST'])
 def datewisemesschange():
+		now = datetime.datetime.now()
+		hours=now.hour
+		curr_day=now.day
+		curr_month=now.month
+		curr_year=now.year
+
 		formdate=request.form['demo']
 		datearr=formdate.split('-')
 		starting_date=datearr[0]
@@ -630,32 +737,79 @@ def datewisemesschange():
 		end_day=end_arr[0]
 		end_month=end_arr[1]
 		end_year=end_arr[2]
+
+		if(int(curr_year)>int(start_year) or int(curr_year)>int(end_year)):
+		            return render_template("change_mess_registration.html")
+
+		if(int(curr_year)==int(start_year)):
+		    if(int(curr_month)>int(start_month)):
+				return render_template("change_mess_registration.html")
+		if(int(curr_month)==int(start_month)):
+				if(int(curr_day)>int(start_day)):
+				       return render_template("change_mess_registration.html")
+				if(int(start_day)<int(curr_day+2)):		    
+				      return render_template("change_mess_registration.html")
+		if(int(start_year)>int(end_year)):
+		    return render_template("change_mess_registration.html")
 		breakfast = request.form.get('meal_type_1')
 		lunch = request.form.get('meal_type_2')
 		dinner = request.form.get('meal_type_3')
 		messname1=request.form['messname']
 		with sql.connect("mess_portal.db") as con:
-			con.row_factory = sql.Row
-			cur = con.cursor()
-			if breakfast:
-											query="UPDATE meal_registration SET bbit ='0',breakfast = "+"'"+str(messname1)+"'"+" WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
-											print query
-											cur.execute(query)
-											con.commit()
-			if lunch:
-											query="UPDATE meal_registration SET lbit ='0',lunch = "+"'"+str(messname1)+"'"+" WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
-											cur.execute(query)
-											con.commit()
-			if dinner:
-											query="UPDATE meal_registration SET dbit ='0',dinner = "+"'"+str(messname1)+"'"+" WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"    
-											cur.execute(query)
-											con.commit()                    
+					con.row_factory = sql.Row
+					cur = con.cursor()
+					print start_day
+					print end_day
+					print start_month
+					print end_month
+					if(start_day>end_day and start_month<end_month):
+								if breakfast:
 
-		return render_template("change_mess_registration.html")
+
+												query="UPDATE meal_registration SET bbit ='0',breakfast = "+"'"+str(messname1)+"'"+" WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(start_day)+" and day<="+str(31)+" and month>="+str(start_month)+" and month<="+str(start_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
+												cur.execute(query)
+												query="UPDATE meal_registration SET bbit ='0',breakfast = "+"'"+str(messname1)+"'"+" WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(1)+" and day<="+str(end_day)+" and month>="+str(end_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
+												cur.execute(query)
+												con.commit()
+								if lunch:
+												query="UPDATE meal_registration SET lbit ='0',lunch = "+"'"+str(messname1)+"'"+" WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(start_day)+" and day<="+str(31)+" and month>="+str(start_month)+" and month<="+str(start_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
+												cur.execute(query)
+												query="UPDATE meal_registration SET lbit ='0',lunch = "+"'"+str(messname1)+"'"+" WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(1)+" and day<="+str(end_day)+" and month>="+str(end_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
+												cur.execute(query)
+												con.commit()
+								if dinner:
+												query="UPDATE meal_registration SET dbit ='0',dinner = "+"'"+str(messname1)+"'"+" WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(start_day)+" and day<="+str(31)+" and month>="+str(start_month)+" and month<="+str(start_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
+												cur.execute(query)
+												query="UPDATE meal_registration SET dbit ='0',dinner = "+"'"+str(messname1)+"'"+" WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(1)+" and day<="+str(end_day)+" and month>="+str(end_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
+												cur.execute(query)
+												con.commit()                    
+
+					else:
+
+
+							if breakfast:
+
+
+										query="UPDATE meal_registration SET bbit ='0',breakfast = "+"'"+str(messname1)+"'"+" WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
+										print query
+										cur.execute(query)
+										con.commit()
+							if lunch:
+										query="UPDATE meal_registration SET lbit ='0',lunch = "+"'"+str(messname1)+"'"+" WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
+										cur.execute(query)
+										con.commit()
+							if dinner:
+										query="UPDATE meal_registration SET dbit ='0',dinner = "+"'"+str(messname1)+"'"+" WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"    
+										cur.execute(query)
+										con.commit()                    
+
+					return render_template("change_mess_registration.html")
+
 
 @app.route("/cancelmealdaywise", methods=['POST'])
 def cancelmealdaywise():
 			now = datetime.datetime.now()
+			hours=now.hour
 			start_day=now.day
 			start_month=now.month
 			start_year=now.year
@@ -670,18 +824,23 @@ def cancelmealdaywise():
 					con.row_factory = sql.Row
 					cur = con.cursor()
 					if breakfast:
-												query="UPDATE meal_registration SET bbit = '1' WHERE (roll_no="+str(session['roll_no'])+" and dayname="+"'"+str(daycancel)+"'"+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
-												print query
-												cur.execute(query)
-												con.commit()
-					if lunch:
-												query="UPDATE meal_registration SET lbit = '1' WHERE (roll_no="+str(session['roll_no'])+" and dayname="+"'"+str(daycancel)+"'"+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
-												cur.execute(query)
-												con.commit()
-					if dinner:
-												query="UPDATE meal_registration SET dbit = '1' WHERE (roll_no="+str(session['roll_no'])+" and dayname="+"'"+str(daycancel)+"'"+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
-												cur.execute(query)
-												con.commit()                    
+							start_day+=1
+							query="UPDATE meal_registration SET bbit = '1' WHERE (roll_no="+str(session['roll_no'])+" and dayname="+"'"+str(daycancel)+"'"+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
+							print query
+							cur.execute(query)
+							con.commit()
+					if lunch:                   
+							if(hours>=7):
+								start_day+=1
+							query="UPDATE meal_registration SET lbit = '1' WHERE (roll_no="+str(session['roll_no'])+" and dayname="+"'"+str(daycancel)+"'"+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
+							cur.execute(query)
+							con.commit()
+					if dinner:                  
+							if(hours>=15):
+								start_day+=1
+							query="UPDATE meal_registration SET dbit = '1' WHERE (roll_no="+str(session['roll_no'])+" and dayname="+"'"+str(daycancel)+"'"+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
+							cur.execute(query)
+							con.commit()                    
 														
 
 			return render_template("cancel_meals.html")
@@ -689,6 +848,7 @@ def cancelmealdaywise():
 @app.route("/uncancelmealdaywise", methods=['POST'])
 def uncancelmealdaywise():
 			now = datetime.datetime.now()
+			hours=now.hour
 			start_day=now.day
 			start_month=now.month
 			start_year=now.year
@@ -703,22 +863,27 @@ def uncancelmealdaywise():
 					con.row_factory = sql.Row
 					cur = con.cursor()
 					if breakfast:
-												query="UPDATE meal_registration SET bbit = '0' WHERE (roll_no="+str(session['roll_no'])+" and dayname="+"'"+str(daycancel)+"'"+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
-												print query
-												cur.execute(query)
-												con.commit()
-					if lunch:
-												query="UPDATE meal_registration SET lbit = '0' WHERE (roll_no="+str(session['roll_no'])+" and dayname="+"'"+str(daycancel)+"'"+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
-												cur.execute(query)
-												con.commit()
-					if dinner:
-												query="UPDATE meal_registration SET dbit = '0' WHERE (roll_no="+str(session['roll_no'])+" and dayname="+"'"+str(daycancel)+"'"+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
-												cur.execute(query)
-												con.commit()                    
+							start_day+=1
+							query="UPDATE meal_registration SET bbit = '0' WHERE (roll_no="+str(session['roll_no'])+" and dayname="+"'"+str(daycancel)+"'"+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
+							print query
+							cur.execute(query)
+							con.commit()
+					if lunch:                   
+							if(hours>=7):
+								start_day+=1
+							query="UPDATE meal_registration SET lbit = '0' WHERE (roll_no="+str(session['roll_no'])+" and dayname="+"'"+str(daycancel)+"'"+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
+							cur.execute(query)
+							con.commit()
+					if dinner:                  
+							if(hours>=15):
+								start_day+=1
+							query="UPDATE meal_registration SET dbit = '0' WHERE (roll_no="+str(session['roll_no'])+" and dayname="+"'"+str(daycancel)+"'"+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
+							cur.execute(query)
+							con.commit()                    
 														
 
 			return render_template("cancel_meals.html")			
-
+			return render_template("cancel_meals.html")			
 @app.route("/daywisemesschange", methods=['POST'])
 def daywisemesschange():
 		now = datetime.datetime.now()
@@ -812,3 +977,21 @@ def show_logout_page():
 @app.route("/login.html")
 def show_login_page():
 	return render_template("/login.html")
+
+@app.route("/getdefaultmess")
+def get_def_mess():
+	print "----------------------------------------------"
+	a,b,c=model.getdefaultmess(session["roll_no"])
+
+	return render_template("/default_mess.html",mess1=a,mess2=b,mess3=c)
+
+@app.route("/bill")
+def billing():
+	#model.calculate_bill(session['roll_no'])
+	#print model.get_rates()
+	msg = model.get_bill_details(session['roll_no'], datetime.datetime.now().month, datetime.datetime.now().year)
+	canc = model.get_cancellations()
+	json_obj = json.dumps(msg)
+	cancel = json.dumps(canc)
+	resp = make_response(render_template("billing.html", message=json_obj, canc=cancel))
+	return resp
