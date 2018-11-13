@@ -9,8 +9,6 @@ from app import app
 
 @app.route("/")
 def login():
-	print "************************"
-	print session
 	msg={}
 	email = request.cookies.get('email')
 	print "email : ", email
@@ -20,12 +18,10 @@ def login():
 
 		roll_no = session[email]
 		msg["roll_no"] = roll_no
-		msg["name"]=session["name"]
+		
+		name = request.cookies.get('name')
+		msg["name"]=name
 		msg["authenticate"]=True
-
-		if session["first_login"] == True:
-			return render_template("set_default_mess.html")
-
 		meals = model.get_meal_registration_for_month(roll_no, datetime.datetime.now().month, datetime.datetime.now().year)
 
 		msg["breakfast"]=meals["breakfast"]
@@ -61,11 +57,10 @@ def login_admin():
 
 @app.route("/logout")
 def logout():
-	# email = request.cookies.get('email')
-	# session.pop(email,None)
-	# session.pop("name",None)
-	# session.pop("roll_no",None)
-	session.clear()
+	email = request.cookies.get('email')
+	session.pop(email,None)
+	session.pop("name",None)
+	session.pop("roll_no",None)
 	return render_template("login.html")
 
 @app.route("/authenticate", methods=['POST'])
@@ -90,10 +85,8 @@ def authenticate():
 				roll_no=msg["roll_no"]
 
 				if msg["first_login"] == True:
-					session["first_login"] = True
 					resp = make_response(render_template("set_default_mess.html", message=json_obj))
 				else:
-					session["first_login"] = False
 					resp = make_response(render_template("dashboard.html", message=json_obj))
 
 				resp.set_cookie('email', email)
@@ -127,37 +120,39 @@ def authenticate_admin():
 
 			return resp
 
-@app.route("/setdefaultmess", methods=['POST'])
-def set_default_mess():
+@app.route("/firstlogin", methods=['POST'])
+def first_login():
+
+	if not session.get('name'):
+		return render_template('login.html')
+
+	email = request.form['email']
+	msg={}
+
 	if request.method == 'POST':
+			msg = loginp.authenticate_student(request)
+			
+			if msg['authenticate'] == False:
+				return render_template('login.html')
+			else:
+				
+				json_obj = json.dumps(msg)
+				
+				session[email] = msg["roll_no"]
+				session["name"] = msg["name"]
+				session["roll_no"] = msg["roll_no"]
+				roll_no=msg["roll_no"]
 
-		roll_no = session["roll_no"]
-		default_breakfast_mess = request.form["default_breakfast_mess"]
-		default_lunch_mess = request.form["default_lunch_mess"]
-		default_dinner_mess = request.form["default_dinner_mess"]
+				if msg["first_login"] == True:
+					resp = make_response(render_template("set_default_mess.html", message=json_obj))
+				else:
+					resp = make_response(render_template("dashboard.html", message=json_obj))
 
-		result = model.set_default_mess(roll_no, default_breakfast_mess, default_lunch_mess, default_dinner_mess)
+				resp.set_cookie('email', email)
+				resp.set_cookie('name', msg["name"])
 
-		if result == "success":
-			msg={}
-			email = request.cookies.get('email')
-			roll_no = session[email]
-			msg["roll_no"] = roll_no
-			msg["name"]=session["name"]
-			msg["authenticate"]=True
-			meals = model.get_meal_registration_for_month(roll_no, datetime.datetime.now().month, datetime.datetime.now().year)
-
-			msg["breakfast"]=meals["breakfast"]
-			msg["lunch"]=meals["lunch"]
-			msg["dinner"]=meals["dinner"]
-			msg["bcancel"]=meals["bcancel"]
-			msg["lcancel"]=meals["lcancel"]
-			msg["dcancel"]=meals["dcancel"]
-			json_obj = json.dumps(msg)
-			session["first_login"] = False
-			return render_template("dashboard.html", message=json_obj)
-		else:
-			return render_template("set_default_mess.html")
+	#return resp
+	return ""
 
 @app.route("/nextmonth", methods=['POST'])
 def nextmonth():
@@ -176,7 +171,10 @@ def nextmonth():
 def get_mess_menu():
 	msg={}
 	email = request.cookies.get('email')
-	
+	print
+	print
+	print "**************************************"
+	print "email : ", session[email]
 	json_obj = request.form['mydata_mess_menu']
 	json_data = json.loads(json_obj)
 	breakfast = json_data['breakfast']
@@ -184,7 +182,7 @@ def get_mess_menu():
 	dinner = json_data['dinner']
 	day = json_data['day']
 	print "in get_mess_menu"
-	
+	print day
 	if request.method == 'POST':
 		
 		msg = model.get_mess_menu(breakfast, lunch, dinner, day)
@@ -196,16 +194,20 @@ def get_meal_menu():
 	print "getmealmenu"
 	msg={}
 	email = request.cookies.get('email')
-	
+	print
+	print
+	print "**************************************"
+	print "email : ", session[email]
 	json_obj = request.form['mydata_mess_menu']
 	json_data = json.loads(json_obj)
 	meal = json_data['meal']
 	day = json_data['day']
+	button_name= json_data['bname']
 	print "in get_meal_menu"
-	
+	print day
 	if request.method == 'POST':
 		
-		msg = model.get_meal_menu(meal, day)
+		msg = model.get_meal_menu(meal, day,button_name)
 		jso = json.dumps(msg)
 		return jso
 
@@ -216,8 +218,6 @@ def cancelmeal():
 		return render_template('login.html')
 	if session["user"] != "student":
 		return "Not authorized"
-	if session["first_login"] == True:
-		return render_template("set_default_mess.html")
 	return render_template("cancel_meals.html")	
 
 @app.route("/cancelmealstatus", methods=['POST'])
@@ -412,6 +412,9 @@ def uncancelmealstatus():
 															print "working"
 
 				return render_template("cancel_meals.html")
+# @app.route("/home.html")
+# def index():
+# 	return render_template("index.html")
 
 @app.route("/studentprofile", methods = ['GET'])
 def get_student_profile():
@@ -470,6 +473,9 @@ def cancelcurrI():
 						con.commit()
 				msg={}
 				email = request.cookies.get('email')
+				print "email : ", email
+				print "session : ", session
+				print "cookies : ", request.cookies
 
 				roll_no = session[email]
 				msg["roll_no"] = roll_no
@@ -530,7 +536,9 @@ def cancelcurrII():
 						con.commit()
 				msg={}
 				email = request.cookies.get('email')
-				
+				print "email : ", email
+				print "session : ", session
+				print "cookies : ", request.cookies
 
 				roll_no = session[email]
 				msg["roll_no"] = roll_no
@@ -593,7 +601,10 @@ def cancelcurrIII():
 						con.commit()
 				msg={}
 				email = request.cookies.get('email')
-				
+				print "email : ", email
+				print "session : ", session
+				print "cookies : ", request.cookies
+
 				roll_no = session[email]
 				msg["roll_no"] = roll_no
 
@@ -618,8 +629,6 @@ def change_mess_registration():
 		return render_template('login.html')
 	if session["user"] != "student":
 		return "Not authorized"
-	if session["first_login"] == True:
-		return render_template("set_default_mess.html")
 	return render_template("change_mess_registration.html")	
 
 @app.route("/default_mess.html")
@@ -628,8 +637,6 @@ def default_mess():
 		return render_template('login.html')
 	if session["user"] != "student":
 		return "Not authorized"
-	if session["first_login"] == True:
-		return render_template("set_default_mess.html")
 	return render_template("default_mess.html")	
 
 @app.route("/dashboard.html")
@@ -638,8 +645,6 @@ def show_dashboard():
 		return render_template('login.html')
 	if session["user"] != "student":
 		return "Not authorized"
-	if session["first_login"] == True:
-		return render_template("set_default_mess.html")
 	msg={}
 	email = request.cookies.get('email')
 	if email in session:
@@ -671,8 +676,6 @@ def show_change_mess_menu():
 		return render_template('login.html')
 	if session["user"] != "student":
 		return "Not authorized"
-	if session["first_login"] == True:
-		return render_template("set_default_mess.html")
 	return render_template("change_mess_menu.html")	
 
 @app.route("/changemenu", methods=['POST'])
@@ -699,8 +702,6 @@ def show_change_default_mess_admin():
 		return render_template('login.html')
 	if session["user"] != "student":
 		return "Not authorized"
-	if session["first_login"] == True:
-		return render_template("set_default_mess.html")
 	return render_template("change_default_mess_admin.html")	
 
 @app.route("/change_default_mess", methods=['POST'])
@@ -805,7 +806,6 @@ def datewisemesschange():
 
 					return render_template("change_mess_registration.html")
 
-
 @app.route("/cancelmealdaywise", methods=['POST'])
 def cancelmealdaywise():
 			now = datetime.datetime.now()
@@ -883,7 +883,7 @@ def uncancelmealdaywise():
 														
 
 			return render_template("cancel_meals.html")			
-			return render_template("cancel_meals.html")			
+
 @app.route("/daywisemesschange", methods=['POST'])
 def daywisemesschange():
 		now = datetime.datetime.now()
@@ -985,6 +985,64 @@ def get_def_mess():
 
 	return render_template("/default_mess.html",mess1=a,mess2=b,mess3=c)
 
+
+@app.route("/monthlymesssubscribe", methods=['POST'])
+def monthlymesssubscribe():
+
+			formdate=request.form['monthname']
+			datearr=formdate.split('/')
+			start_day=1
+			start_month=datearr[0]
+			start_year=datearr[1]
+			end_day=31
+			end_month=datearr[0]
+			end_year=datearr[1]
+			breakfast = True
+			lunch = True
+			dinner = True
+			messname1=request.form['messname1']
+			with sql.connect("mess_portal.db") as con:
+					con.row_factory = sql.Row
+					cur = con.cursor()
+					if breakfast:
+						query="UPDATE meal_registration SET bbit ='0',breakfast = "+"'"+str(messname1)+"'"+" WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
+						print query
+						cur.execute(query)
+						con.commit()
+					if lunch:
+						query="UPDATE meal_registration SET lbit ='0',lunch = "+"'"+str(messname1)+"'"+" WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"
+						cur.execute(query)
+						con.commit()
+					if dinner:
+						query="UPDATE meal_registration SET dbit ='0',dinner = "+"'"+str(messname1)+"'"+" WHERE (roll_no="+str(session['roll_no'])+" and day>="+str(start_day)+" and day<="+str(end_day)+" and month>="+str(start_month)+" and month<="+str(end_month)+" and year>="+str(start_year)+" and year<="+str(end_year)+")"    
+						cur.execute(query)
+					con.commit()
+					query="UPDATE monthly_registration SET rbit ='1',mess = "+"'"+str(messname1)+"'"+" WHERE (roll_no="+str(session['roll_no'])+" and month="+str(start_month)+" and year="+str(start_year)+")" 
+					cur.execute(query)
+			return render_template("change_mess_registration.html")
+
+@app.route("/monthlymessunsubscribe", methods=['POST'])
+def monthlymessunsubscribe():
+
+			formdate=request.form['monthname']
+			datearr=formdate.split('/')
+			start_day=1
+			start_month=datearr[0]
+			start_year=datearr[1]
+			end_day=31
+			end_month=datearr[0]
+			end_year=datearr[1]
+			breakfast = True
+			lunch = True
+			dinner = True
+			messname1=request.form['messname1']
+			with sql.connect("mess_portal.db") as con:
+					con.row_factory = sql.Row
+					cur = con.cursor()
+					query="UPDATE monthly_registration SET rbit ='0',mess = "+"'"+str(messname1)+"'"+" WHERE (roll_no="+str(session['roll_no'])+" and month="+str(start_month)+" and year="+str(start_year)+")" 
+					cur.execute(query)
+			return render_template("change_mess_registration.html")
+
 @app.route("/bill")
 def billing():
 	msg = model.get_bill_details(session['roll_no'], datetime.datetime.now().month, datetime.datetime.now().year)
@@ -994,4 +1052,5 @@ def billing():
 	cancel = json.dumps(canc)
 	rate = json.dumps(rate)
 	resp = make_response(render_template("billing.html", message=json_obj, canc=cancel, rate=rate))
-	return resp
+	return resp			
+		
