@@ -7,6 +7,12 @@ import sqlite3 as sql
 from flask import make_response
 from app import app
 
+from flask_uploads import UploadSet, configure_uploads, IMAGES
+#from flask.ext.uploads import UploadSet, configure_uploads, IMAGES
+photos = UploadSet('photos', IMAGES)
+app.config['UPLOADED_PHOTOS_DEST'] = 'Feedback Images'
+configure_uploads(app, photos)
+
 @app.route("/")
 def login():
 	msg={}
@@ -1054,3 +1060,27 @@ def billing():
 	resp = make_response(render_template("billing.html", message=json_obj, canc=cancel, rate=rate))
 	return resp			
 		
+@app.route("/feedback.html")
+def feedback_page():
+	return render_template("/feedback.html")
+	
+@app.route("/feedback",methods=['POST'])
+def feedback():
+	mess = request.form['mess']
+	subject = request.form['subject']	
+	if request.method == 'POST' and 'fileToUpload' in request.files:
+		filename = photos.save(request.files['fileToUpload'])
+  	args = [session['roll_no'],session['name'],mess,subject,filename]
+	comm = str(args[0])+",'"+str(args[1])+"','"+str(args[2])+"','"+str(args[3])+"','"+str(args[4])+"'"
+	print comm
+	try:
+		with sql.connect("mess_portal.db") as con:
+			con.row_factory = sql.Row
+			cur = con.cursor()
+			comm = "insert into feedbacks values (" + comm + ")"
+			print comm
+			cur.execute(comm)
+			print "Hi"
+	except:
+		print "Feedback Submission Fails.."
+	return render_template("/feedback.html")
