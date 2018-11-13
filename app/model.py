@@ -101,7 +101,7 @@ def get_mess_menu(breakfast, lunch, dinner, day):
 		return "connection fails get_mess_menu"
 	return menu
 
-def get_meal_menu(meal, day):
+def get_meal_menu(meal, day,bname):
 
 	print "inside model get_mess_menu"
 	menu={}
@@ -110,13 +110,30 @@ def get_meal_menu(meal, day):
 		with sql.connect("mess_portal.db") as con:
 			con.row_factory = sql.Row
 			cur = con.cursor()
+			now = datetime.datetime.now()
+			hours=now.hour
 
 			date = datetime.datetime.now().day
 			month = datetime.datetime.now().month
 			year = datetime.datetime.now().year
-			print "this query"
+			print "Welcome to my page"
+			if(hours>=22 and hours<=23):
+			      	date+=1
+
+			if(hours>=10 and hours<=14):
+				if(bname=="menuIII"):
+			      	    date=date+1  
+
+			if(hours>=15 and hours<=21):
+				if(bname=="menuII"):
+				     date=date+1
+
+				if(bname=="menuIII"):
+				    date=date+1  
+  	     
+
 			query="select "+ meal +" from  meal_registration where day=" + str(date) + " and month=" + str(month) + " and year=" + str(year)
-			
+
 			print query
 			cur.execute(query)
 			rows = cur.fetchall()

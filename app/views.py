@@ -202,11 +202,12 @@ def get_meal_menu():
 	json_data = json.loads(json_obj)
 	meal = json_data['meal']
 	day = json_data['day']
+	button_name= json_data['bname']
 	print "in get_meal_menu"
 	print day
 	if request.method == 'POST':
 		
-		msg = model.get_meal_menu(meal, day)
+		msg = model.get_meal_menu(meal, day,button_name)
 		jso = json.dumps(msg)
 		return jso
 
