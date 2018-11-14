@@ -12,7 +12,7 @@ def set_default_mess(roll_no, default_breakfast_mess, default_lunch_mess, defaul
 		with sql.connect("mess_portal.db") as con:
 			con.row_factory = sql.Row
 			cur = con.cursor()
-			query = "update student_profile set default_breakfast='" + default_dinner_mess +"', default_lunch ='" + default_lunch_mess +"', default_dinner =' " + default_dinner_mess +"' where roll_no =" + str(roll_no)
+			query = "update student_profile set default_breakfast='" + default_breakfast_mess +"', default_lunch ='" + default_lunch_mess +"', default_dinner =' " + default_dinner_mess +"' where roll_no =" + str(roll_no)
 			cur.execute(query)
 			flag = True
 	except:
