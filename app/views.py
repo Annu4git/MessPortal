@@ -6,6 +6,7 @@ import datetime
 import sqlite3 as sql
 from flask import make_response
 from app import app
+import graphs as graphs
 
 from flask_uploads import UploadSet, configure_uploads, IMAGES
 #from flask.ext.uploads import UploadSet, configure_uploads, IMAGES
