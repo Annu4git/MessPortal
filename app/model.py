@@ -428,3 +428,19 @@ def populatelist(filter):
 		print "connection fails getdefaultmess"
 		return "connection fails getdefaultmess"
 	
+def show_feedback():
+	try:
+		with sql.connect("mess_portal.db") as con:
+			con.row_factory = sql.Row
+			cur = con.cursor()
+			query="select * from feedbacks"
+			cur.execute(query)
+			rows = cur.fetchall()
+			obj={}
+			for i in range (0,len(rows)):
+				obj[i] = list(rows[i])
+			print obj
+			return obj
+	except:
+		print "Connection Failed.."
+		return "Connection Failed.."
