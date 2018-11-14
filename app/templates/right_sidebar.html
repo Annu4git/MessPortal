@@ -17,6 +17,65 @@ function show_meal_data(button_name)
       var dd = today.getDate();
       var hours=today.getHours();
       var dayName = gsDayNames[today.getDay()];
+      var x=0
+      if(hours>=22 && hours<=23){
+        if(button_name=="menuI"){
+          meal="breakfast";
+          dayName = gsDayNames[today.getDay()+1];
+          x+=1;
+        }
+      if(button_name=="menuII"){
+          meal="lunch";
+          dayName = gsDayNames[today.getDay()+1];
+          x+=1;
+        }
+      if(button_name=="menuIII"){
+          meal="dinner";
+          dayName = gsDayNames[today.getDay()+1];
+          x+=1;
+        } 
+      }
+      if(hours>=0 && hours<=9){
+        if(button_name=="menuI"){
+           meal="breakfast";
+         }
+        if(button_name=="menuII"){
+          meal="lunch";
+        }
+        if(button_name=="menuIII"){
+          meal="dinner";
+        }  
+      }
+      if(hours>=10 && hours<=14){
+        if(button_name=="menuI"){
+           meal="lunch";
+         }
+        if(button_name=="menuII"){
+           meal="dinner";
+         } 
+        if(button_name=="menuIII"){
+           meal="breakfast";
+           dayName = gsDayNames[today.getDay()+1];
+           x+=1;
+         } 
+      }
+      if(hours>=15 && hours<=21){
+        if(button_name=="menuI"){
+          meal="dinner";
+        }
+        if(button_name=="menuII"){
+           meal="breakfast";
+           dayName = gsDayNames[today.getDay()+1];
+           x+=1;
+         } 
+        if(button_name=="menuIII"){
+           meal="lunch";
+           dayName = gsDayNames[today.getDay()+1];
+           x+=1;
+         } 
+        
+      }  
+
       
       if(hours>=22 && hours<=23){
         if(button_name=="menuI"){
@@ -88,7 +147,7 @@ function show_meal_data(button_name)
           document.getElementById("mess_modal").innerHTML=mess_menu_data["mess"];
           document.getElementById("meal_modal").innerHTML = mess_menu_data["meal_menu"];
           
-          document.getElementById("meal_modal_date").innerHTML=today.getDate() + "-" +
+          document.getElementById("meal_modal_date").innerHTML=(today.getDate()+x) + "-" +
           (today.getMonth()+1) + "-" + today.getFullYear();
 
           //meal_menu
