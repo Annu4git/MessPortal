@@ -180,18 +180,12 @@ def nextmonth():
 def get_mess_menu():
 	msg={}
 	email = request.cookies.get('email')
-	print
-	print
-	print "**************************************"
-	print "email : ", session[email]
 	json_obj = request.form['mydata_mess_menu']
 	json_data = json.loads(json_obj)
 	breakfast = json_data['breakfast']
 	lunch = json_data['lunch']
 	dinner = json_data['dinner']
 	day = json_data['day']
-	print "in get_mess_menu"
-	print day
 	if request.method == 'POST':
 		
 		msg = model.get_mess_menu(breakfast, lunch, dinner, day)
@@ -1072,11 +1066,14 @@ def feedback_page():
 def feedback():
 	mess = request.form['mess']
 	subject = request.form['subject']	
+	args = [session['roll_no'],session['name'],mess,subject,""]
 	if request.method == 'POST' and 'fileToUpload' in request.files:
 		filename = photos.save(request.files['fileToUpload'])
-  	args = [session['roll_no'],session['name'],mess,subject,filename]
-	comm = str(args[0])+",'"+str(args[1])+"','"+str(args[2])+"','"+str(args[3])+"','"+str(args[4])+"'"
-	print comm
+		args[4] = filename
+	comm = str(args[0])
+	for i in range(1,len(args)):
+		comm = comm + ",'"+str(args[i])+"'"
+		print comm
 	try:
 		with sql.connect("mess_portal.db") as con:
 			con.row_factory = sql.Row
@@ -1160,3 +1157,32 @@ def monthwise_linechart():
 	graph_data=graphs.monthwise_line(month)
 	return render_template("/visualization.html")
 
+@app.route("/setdefaultmess", methods=['POST'])
+def set_default_mess():
+	if request.method == 'POST':
+		roll_no = session["roll_no"]
+		default_breakfast_mess = request.form["default_breakfast_mess"]
+		default_lunch_mess = request.form["default_lunch_mess"]
+		default_dinner_mess = request.form["default_dinner_mess"]
+		print "before"
+		result = changemess.set_default_mess(roll_no, default_breakfast_mess, default_lunch_mess, default_dinner_mess)
+		print "after"
+		if result == "success":
+			msg={}
+			email = request.cookies.get('email')
+			roll_no = session[email]
+			msg["roll_no"] = roll_no
+			msg["name"]=session["name"]
+			msg["authenticate"]=True
+			meals = model.get_meal_registration_for_month(roll_no, datetime.datetime.now().month, datetime.datetime.now().year)
+			msg["breakfast"]=meals["breakfast"]
+			msg["lunch"]=meals["lunch"]
+			msg["dinner"]=meals["dinner"]
+			msg["bcancel"]=meals["bcancel"]
+			msg["lcancel"]=meals["lcancel"]
+			msg["dcancel"]=meals["dcancel"]
+			json_obj = json.dumps(msg)
+			session["first_login"] = False
+			return render_template("dashboard.html", message=json_obj)
+		else:
+			return render_template("set_default_mess.html")
