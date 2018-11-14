@@ -13,7 +13,7 @@ import changemess as changemess
 from flask_uploads import UploadSet, configure_uploads, IMAGES
 #from flask.ext.uploads import UploadSet, configure_uploads, IMAGES
 photos = UploadSet('photos', IMAGES)
-app.config['UPLOADED_PHOTOS_DEST'] = 'Feedback Images'
+app.config['UPLOADED_PHOTOS_DEST'] = 'app/static/Images'
 configure_uploads(app, photos)
 
 @app.route("/")
@@ -1186,3 +1186,9 @@ def set_default_mess():
 			return render_template("dashboard.html", message=json_obj)
 		else:
 			return render_template("set_default_mess.html")
+
+@app.route("/read_feedback.html")
+def show_feedback():
+	msg = model.show_feedback()
+	json_obj = json.dumps(msg)
+	return render_template("/read_feedback.html", feedback=json_obj)
