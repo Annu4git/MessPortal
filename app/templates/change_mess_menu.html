@@ -71,6 +71,18 @@ function check(a)
       document.getElementById("status_text").innerHTML="<b><font color='green'>Successfully Updated !</font></b>"
 }
 
+function alter()
+{
+  document.getElementById("newmenu").value =
+
+  document.getElementById("item1").value + " " + 
+  document.getElementById("item2").value + " " +
+  document.getElementById("item3").value + " " +
+  document.getElementById("item4").value + " " +
+  document.getElementById("item5").value
+
+  
+}
 
 </script>
 
@@ -89,10 +101,11 @@ function check(a)
   <b><h3><u>Change Mess Menu</u></h3></b>
   <center><a href="admin_dashboard.html">Click here Go Back !</a></center>
   <div class="modal-content" >
-      <br><br>
+      
 
   
   <form name="mess_menu" method="post">
+  <br><span id="status_text"></span>
   <table>
     <tr>
 
@@ -126,18 +139,16 @@ function check(a)
   </select></td>
   </tr>
   <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
-  <tr><td>
+  <tr><td>Item 1 :</td><td><input type="text" id="item1" required></td></tr>
+  <tr><td>Item 2 :</td><td><input type="text" id="item2" ></td></tr>
+  <tr><td>Item 3 :</td><td><input type="text" id="item3" ></td></tr>
+  <tr><td>Item 4 :</td><td><input type="text" id="item4" ></td></tr>
+  <tr><td>Item 5 :</td><td><input type="text" id="item5" ></td></tr>
   
-    Item 1 :
-    Item 2 :
-    Item 3 :
-    Item 4 :
 
-
-
-
-
-  New Menu : </td><td><input type="text" name="newmenu" required></td></tr>
+  <tr><td></td><td><button style="width:60%" class="btn btn-success" type="button" id="pokemon" onclick="alter()">Set Menu</button></td></tr>
+   
+  <tr><td>New Menu : </td><td><input placeholder="Do not write anything here" type="text" id="newmenu" name="newmenu" required readonly="true"></td></tr>
 
 
 
@@ -145,12 +156,17 @@ function check(a)
 
 </table>
 <br>
+  
   <input class="btn btn-primary" formaction="/changemenu" type="submit" value="submit">
-  <br><br>
-  <span id="status_text"></span>
+</form>
+  
+  
+  <Br><br>
   </div>
-  </form>
+  
+  
 </div>
+<br><Br>
 </center>
   <div style="float:left;width:25%;height:40%; padding: 0px 10px 0px 10px;">
       
