@@ -16,11 +16,11 @@
 
 .collapsible 
 {
-  background-color: #1abc9c;
+  background-color: lightblue;
   color: white;
   cursor: pointer;
   padding: 18px;
-  width: 100%;
+  width: 60%;
   border: none;
   text-align: left;
   outline: none;
@@ -28,7 +28,7 @@
 }
 
 .active, .collapsible:hover {
-  background-color: #1abc9c;
+  background-color: lightblue;
 }
 
 .content {
@@ -37,6 +37,13 @@
   overflow: hidden;
   transition: max-height 0.2s ease-out;
   background-color: #f1f1f1;
+}
+.modal-content
+{
+  background-color: white;
+  margin:5% auto auto auto;
+  border:1px solid #777;
+  width:80%;
 }
 </style>
 
@@ -56,7 +63,12 @@
 
 <div style="float:left;width:80%;height:40%; padding: 0px 10px 0px 10px;border-radius: 10px">
 
-
+<center><b> <h3><u>Visualize Mess Registrations</u></h3> </b></center>
+<center><a href="admin_dashboard.html">Click here Go Back !</a></center>
+<br>
+<center>
+<div class="modal-content" >
+	<br><Br>
 <button class="collapsible">Datewise Pie Chart</button>
 <div class="content">
 	<br>
@@ -94,12 +106,12 @@
 	</center>
 	<br><br>
 </div><br>
+</div>
 
 
 
 
-
-<button class="collapsible">Daywise Line Graph</button>
+<!-- <button class="collapsible">Daywise Line Graph</button>
 <div class="content">
 	<br>
 	<center><form method="POST">
@@ -146,7 +158,7 @@
 	</center>
 	<br><br>
 </div><br>
-
+ -->
 
 </div><br>
 

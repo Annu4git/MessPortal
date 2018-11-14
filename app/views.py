@@ -7,6 +7,8 @@ import sqlite3 as sql
 from flask import make_response
 from app import app
 import graphs as graphs
+import menu as menu
+import changemess as changemess
 
 from flask_uploads import UploadSet, configure_uploads, IMAGES
 #from flask.ext.uploads import UploadSet, configure_uploads, IMAGES
