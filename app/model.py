@@ -406,3 +406,25 @@ def get_rates():
 	except:
 		print "connection fails get_cancellations"
 		return
+
+def populatelist(filter):
+	try:
+		with sql.connect("mess_portal.db") as con:
+			con.row_factory = sql.Row
+			cur = con.cursor()
+			query="select roll_no, name, email, default_breakfast, default_lunch, default_dinner from student_profile where roll_no LIKE '"+filter+"%' or UPPER(name) LIKE UPPER('%"+filter+"%')"           
+			print query
+			cur.execute(query)
+			data=(cur.fetchall())
+			data_list=[]
+
+			for i in data:
+				data_list.append(list(i))
+
+
+			return data_list;
+
+	except:
+		print "connection fails getdefaultmess"
+		return "connection fails getdefaultmess"
+	
