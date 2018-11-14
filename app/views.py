@@ -1104,3 +1104,56 @@ def change_mess_for_day():
 	json_data = json.loads(json_obj)
 	changemess.daywisemesschange(session['roll_no'], json_data['meal'], json_data['mess'], json_data['day'])
 	return "working"
+
+@app.route("/view_student_list.html")
+def show_student_list():
+	return render_template("/view_student_list.html")
+
+@app.route("/populatelist",methods=["POST"])
+def populatelist():
+	filter=request.form["filter"]
+
+	print filter
+	data=model.populatelist(filter)
+	
+	json_obj = json.dumps(data)
+
+	return render_template("/view_student_list.html",data=json_obj)
+
+@app.route("/visualization.html")
+def show_visualization():
+	return render_template("/visualization.html")
+
+@app.route("/datewise_piechart",methods=["POST"])
+def datewise_piechart():
+	date=request.form["pie_date"]
+	bdata,ldata,ddata=graphs.datewise_pie(date)
+	bdata=json.dumps(bdata)
+	ldata=json.dumps(ldata)
+	ddata=json.dumps(ddata)
+	return render_template("/pie_chart_datewise.html",bdata=bdata,ldata=ldata,ddata=ddata,date=date)
+
+
+
+@app.route("/monthwise_piechart",methods=["POST"])
+def monthwise_piechart():
+	month=request.form["pie_month"]
+	bdata,ldata,ddata=graphs.monthwise_pie(month)
+	bdata=json.dumps(bdata)
+	ldata=json.dumps(ldata)
+	ddata=json.dumps(ddata)
+	return render_template("/pie_chart_monthwise.html",bdata=bdata,ldata=ldata,ddata=ddata,month=month)
+
+@app.route("/daywise_linechart")
+def daywise_linechart():
+	graph_data=graphs.daywise_line(day)
+	return render_template("/line_chart_.html")
+
+@app.route("/monthwise_linechart",methods=["POST"])
+def monthwise_linechart():
+	month=request.form["line_month"]
+	print month
+	graph_data=graphs.monthwise_line(month)
+	return render_template("/visualization.html")
+
+
