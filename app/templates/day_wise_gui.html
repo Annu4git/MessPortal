@@ -43,6 +43,7 @@
 
   	var meal="";
   	function set_menus() {
+  		enablebtn()
   		meal = document.getElementById('meal').value
         $.post( "/set_menu_day_wise", {
         mydata : meal
@@ -53,7 +54,8 @@
    
   	}
 
-  	function change_mess_daywise(mess, day) {
+  	function change_mess_daywise(mess, day) 
+  	{
   		
   		mess_day = {
   		  "meal" : meal,
@@ -68,34 +70,59 @@
   	});
   }
 
+  function disablebtn()
+  {
+  	if(document.getElementById("Yuktahar_Monday").innerHTML=="")
+  		$('button[class="menubtn"]').prop('disabled', true);
+  }
+  function enablebtn()
+  {
+  	$('button[class="menubtn"]').prop('disabled', false);
+  }
+
   </script>
 </head>
 <style>
-button
+.menubtn
 {
-	display: inline-block; height: 80px;
+	display: inline-block; height: 120px;
 	width:100%;
+	font-size: 0.75vw;
+	/*font-weight: bold;*/
 }
-.button {
+.menubtn {
     -webkit-transition-duration: 0.4s; /* Safari */
     transition-duration: 0.4s;
 }
 
-button:hover {
+.menubtn:hover {
     background-color: lightblue;
     color: white;
+
 }
+
+.menubtn:disabled
+{
+    cursor:not-allowed
+}
+
+
+
 td
 {
 	width:24%;
 	height: 50%;	
+}
+th
+{
+	text-align: center;
 }
 
 </style>
 
 
 
-<body>
+<body onload="disablebtn()">
 {% include'header.html' %}
 <div>
 
@@ -105,71 +132,71 @@ td
 
 
 <div style="float:left;width:75%;height:40%; padding: 0px 10px 0px 10px;border-radius: 10px">
-<center>
-
+<center><h3>Daywise Meal Selection</h3>
+Select A Meal :
 <select name="meal" id="meal">
 	<option value="breakfast">Breakfast</option>
 	<option value="lunch">Lunch</option>
 	<option>Dinner</option>
 </select> 
 &nbsp;&nbsp;&nbsp;
-<input class="btn btn-primary" type="submit" value="go" onclick="set_menus()">
-
+ <input class="btn btn-primary" type="submit" value="go" onclick="set_menus()">
+<br><br>
 <table>
-	<tr><th>Day</th><th>Yuktahar</th><th>North</th><th>South</th><th>Kadamb</th></tr>
+	<tr><th></th><th>Yuktahar</th><th>North</th><th>South</th><th>Kadamb</th></tr>
 	<tr>
 		<th>Monday</th>
-		<td><button onclick="change_mess_daywise('Yuktahar', 'Monday')" id="Yuktahar_Monday"></button></td>
-		<td><button onclick="change_mess_daywise('North', 'Monday')" id="North_Monday"></button></td>
-		<td><button onclick="change_mess_daywise('South', 'Monday')" id="South_Monday"></button></td>
-		<td><button onclick="change_mess_daywise('Kadamb', 'Monday')" id="Kadamb_Monday"></button></td>
+		<td><button class="menubtn" onclick="change_mess_daywise('Yuktahar', 'Monday')" id="Yuktahar_Monday"></button></td>
+		<td><button class="menubtn" onclick="change_mess_daywise('North', 'Monday')" id="North_Monday"></button></td>
+		<td><button class="menubtn" onclick="change_mess_daywise('South', 'Monday')" id="South_Monday"></button></td>
+		<td><button class="menubtn" onclick="change_mess_daywise('Kadamb', 'Monday')" id="Kadamb_Monday"></button></td>
 	</tr>
 	<tr>
 		<th>Tuesday</th>
-		<td><button onclick="change_mess_daywise('Yuktahar', 'Tuesday')" id="Yuktahar_Tuesday"></button></td>
-		<td><button onclick="change_mess_daywise('North', 'Tuesday')" id="North_Tuesday"></button></td>
-		<td><button onclick="change_mess_daywise('South', 'Tuesday')" id="South_Tuesday"></button></td>
-		<td><button onclick="change_mess_daywise('Kadamb', 'Tuesday')" id="Kadamb_Tuesday"></button></td>
+		<td><button class="menubtn" onclick="change_mess_daywise('Yuktahar', 'Tuesday')" id="Yuktahar_Tuesday"></button></td>
+		<td><button class="menubtn" onclick="change_mess_daywise('North', 'Tuesday')" id="North_Tuesday"></button></td>
+		<td><button class="menubtn" onclick="change_mess_daywise('South', 'Tuesday')" id="South_Tuesday"></button></td>
+		<td><button class="menubtn" onclick="change_mess_daywise('Kadamb', 'Tuesday')" id="Kadamb_Tuesday"></button></td>
 	</tr>
 	</tr>
 	<tr>
 		<th>Wednesday</th>
-		<td><button onclick="change_mess_daywise('Yuktahar', 'Wednesday')" id="Yuktahar_Wednesday"></button></td>
-		<td><button onclick="change_mess_daywise('North', 'Wednesday')" id="North_Wednesday"></button></td>
-		<td><button onclick="change_mess_daywise('South', 'Wednesday')" id="South_Wednesday"></button></td>
-		<td><button onclick="change_mess_daywise('Kadamb', 'Wednesday')" id="Kadamb_Wednesday"></button></td>
+		<td><button class="menubtn" onclick="change_mess_daywise('Yuktahar', 'Wednesday')" id="Yuktahar_Wednesday"></button></td>
+		<td><button class="menubtn" onclick="change_mess_daywise('North', 'Wednesday')" id="North_Wednesday"></button></td>
+		<td><button class="menubtn" onclick="change_mess_daywise('South', 'Wednesday')" id="South_Wednesday"></button></td>
+		<td><button class="menubtn" onclick="change_mess_daywise('Kadamb', 'Wednesday')" id="Kadamb_Wednesday"></button></td>
 	</tr>
 	</tr>
 	<tr>
 		<th>Thursday</th>
-		<td><button onclick="change_mess_daywise('Yuktahar', 'Thursday')" id="Yuktahar_Thursday"></button></td>
-		<td><button onclick="change_mess_daywise('North', 'Thursday')" id="North_Thursday"></button></td>
-		<td><button onclick="change_mess_daywise('South', 'Thursday')" id="South_Thursday"></button></td>
-		<td><button onclick="change_mess_daywise('Kadamb', 'Thursday')" id="Kadamb_Thursday"></button></td>
+		<td><button class="menubtn" onclick="change_mess_daywise('Yuktahar', 'Thursday')" id="Yuktahar_Thursday"></button></td>
+		<td><button class="menubtn" onclick="change_mess_daywise('North', 'Thursday')" id="North_Thursday"></button></td>
+		<td><button class="menubtn" onclick="change_mess_daywise('South', 'Thursday')" id="South_Thursday"></button></td>
+		<td><button class="menubtn" onclick="change_mess_daywise('Kadamb', 'Thursday')" id="Kadamb_Thursday"></button></td>
 	</tr>
 	</tr>
 	<tr>
 		<th>Friday</th>
-		<td><button onclick="change_mess_daywise('Yuktahar', 'Friday')" id="Yuktahar_Friday"></button></td>
-		<td><button onclick="change_mess_daywise('North', 'Friday')" id="North_Friday"></button></td>
-		<td><button onclick="change_mess_daywise('South', 'Friday')" id="South_Friday"></button></td>
-		<td><button onclick="change_mess_daywise('Kadamb', 'Friday')" id="Kadamb_Friday"></button></td>
+		<td><button class="menubtn" onclick="change_mess_daywise('Yuktahar', 'Friday')" id="Yuktahar_Friday"></button></td>
+		<td><button class="menubtn" onclick="change_mess_daywise('North', 'Friday')" id="North_Friday"></button></td>
+		<td><button class="menubtn" onclick="change_mess_daywise('South', 'Friday')" id="South_Friday"></button></td>
+		<td><button class="menubtn" onclick="change_mess_daywise('Kadamb', 'Friday')" id="Kadamb_Friday"></button></td>
 	</tr>
 	</tr>
 	<tr>
 		<th>Saturday</th>
-		<td><button onclick="change_mess_daywise('Yuktahar', 'Saturday')" id="Yuktahar_Saturday"></button></td>
-		<td><bubutton onclick="change_mess_daywise('North', 'Saturday')"tton id="North_Saturday"></button></td>
-		<td><button onclick="change_mess_daywise('South', 'Saturday')" id="South_Saturday"></button></td>
-		<td><button onclick="change_mess_daywise('Kadamb', 'Saturday')" id="Kadamb_Saturday"></button></td>
+		<td><button class="menubtn" onclick="change_mess_daywise('Yuktahar', 'Saturday')" id="Yuktahar_Saturday"></button></td>
+		<td><button class="menubtn" onclick="change_mess_daywise('North', 'Saturday')" id="North_Saturday"></button></td>
+		<td><button class="menubtn" onclick="change_mess_daywise('South', 'Saturday')" id="South_Saturday"></button></td>
+		<td><button class="menubtn" onclick="change_mess_daywise('Kadamb', 'Saturday')" id="Kadamb_Saturday"></button></td>
 	</tr>
 	</tr>
 	<tr>
 		<th>Sunday</th>
-		<td><button onclick="change_mess_daywise('Yuktahar', 'Sunday')" id="Yuktahar_Sunday"></button></td>
-		<td><bubutton onclick="change_mess_daywise('North', 'Sunday')"tton id="North_Sunday"></button></td>
-		<td><button onclick="change_mess_daywise('South', 'Sunday')" id="South_Sunday"></button></td>
-		<td><button onclick="change_mess_daywise('Kadamb', 'Sunday')" id="Kadamb_Sunday"></button></td>
+		<td><button class="menubtn" onclick="change_mess_daywise('Yuktahar', 'Sunday')" id="Yuktahar_Sunday"></button></td>
+		<td><button class="menubtn" onclick="change_mess_daywise('North', 'Sunday')" id="North_Sunday"></button></td>
+		<td><button class="menubtn" onclick="change_mess_daywise('South', 'Sunday')" id="South_Sunday"></button></td>
+		<td><button class="menubtn" onclick="change_mess_daywise('Kadamb', 'Sunday')" id="Kadamb_Sunday"></button></td>
 	</tr>
 
 
