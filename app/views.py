@@ -1084,3 +1084,23 @@ def feedback():
 	except:
 		print "Feedback Submission Fails.."
 	return render_template("/feedback.html")
+
+@app.route("/day_wise_gui.html")
+def day_wise_gui():
+	return render_template("/day_wise_gui.html")
+
+@app.route("/set_menu_day_wise", methods=['POST'])
+def set_menu_day_wise():
+	
+	meal = request.form['mydata']
+	menus = menu.get_menu_day_wise(meal)
+	json_obj = json.dumps(menus)
+	
+	return json_obj
+
+@app.route("/change_mess_for_day", methods=['POST'])
+def change_mess_for_day():
+	json_obj = request.form['mydata_mess_day']
+	json_data = json.loads(json_obj)
+	changemess.daywisemesschange(session['roll_no'], json_data['meal'], json_data['mess'], json_data['day'])
+	return "working"
